@@ -2,4 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    //Added for login
+    <color name="Colour_After_click">#0788DD</color>
+    <color name="textcolor">#141211</color>
+    <color name="grey">#414040</color>
+    <color name="colorprimaryDemo">#fff</color>
+    <color name="colorOnprimaryDemo">#fff</color>
+    <color name="colorOnprimaryLightDemo">#EEE3Ab</color>
+    <color name="colorAccentDemo">#665815</color>
+    <color name="red">#D83428</color>
+    <color name="green">#58F813</color>
+
+    <color name="placeholder_bg">#DDDDDD</color>
+    <color name="placeholder_bg_light">#EFEFEF</color>
+    <color name="teal_700">#FF018786</color>
 </resources>

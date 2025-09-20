@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">MobileRepairing</string>
     <string name="maintenance_icon">Server error Image\n</string>
+    <string name="slogan">Mobile Repairing app को साथ, तपाईको दक्षताको सुरुवात।</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

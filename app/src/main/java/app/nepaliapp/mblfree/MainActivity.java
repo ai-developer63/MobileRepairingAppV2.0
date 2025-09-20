@@ -35,6 +35,7 @@ import app.nepaliapp.mblfree.activity.MaintainaceActivity;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
+import app.nepaliapp.mblfree.fragmentmanager.SigninManager;
 
 public class MainActivity extends AppCompatActivity {
     private static final int SPLASH_DELAY = 2000;
@@ -102,9 +103,11 @@ public class MainActivity extends AppCompatActivity {
                         });
                     } else if (result == 0) {
                         Toast.makeText(MainActivity.this, "App will go forward", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(MainActivity.this,SigninManager.class));
                     } else {
                         //noinspection SpellCheckingInspection
                         Toast.makeText(MainActivity.this, "Hi Subash, How are you??", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(MainActivity.this,SigninManager.class));
                     }
                 } else if (serverContext.equalsIgnoreCase("maintainace")) {
                     Intent intent = new Intent(MainActivity.this, MaintainaceActivity.class);
