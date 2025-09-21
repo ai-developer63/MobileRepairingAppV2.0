@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MobileRepairing">
         <activity
+            android:name=".fragmentmanager.DashBoardManager"
+            android:exported="false" />
+        <activity
             android:name=".activity.MaintainaceActivity"
             android:exported="false" />
         <activity

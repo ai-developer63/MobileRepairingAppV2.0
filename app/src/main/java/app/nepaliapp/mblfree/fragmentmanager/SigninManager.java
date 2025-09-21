@@ -61,7 +61,7 @@ public class SigninManager extends AppCompatActivity {
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                showExitAlertDialog();
+
             }
         };
 
@@ -117,15 +117,7 @@ public class SigninManager extends AppCompatActivity {
     }
 
 
-    private void showExitAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SigninManager.this);
-        builder.setTitle("Exit App");
-        builder.setMessage("Are you sure you want to exit the app?");
-        builder.setPositiveButton("Yes", (dialog, which) -> finish());
-        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-        builder.show();
 
-    }
 
     // Method to hide the keyboard
     private void hideKeyboard() {

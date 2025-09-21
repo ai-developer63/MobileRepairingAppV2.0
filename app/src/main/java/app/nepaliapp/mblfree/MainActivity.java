@@ -7,19 +7,18 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.RequestQueue;
@@ -28,13 +27,12 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-
 import org.json.JSONObject;
-
 import app.nepaliapp.mblfree.activity.MaintainaceActivity;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
+import app.nepaliapp.mblfree.fragmentmanager.DashBoardManager;
 import app.nepaliapp.mblfree.fragmentmanager.SigninManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -89,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 String serverContext = jsonObject.optString("mobilerepairingapp");
+                Log.d("serverContext", serverContext);
                 if (serverContext.equalsIgnoreCase("running")) {
                     String serverVersion = jsonObject.optString("mblversonName");
                     String localVersion = getAppVersionName();
@@ -102,12 +101,25 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     } else if (result == 0) {
-                        Toast.makeText(MainActivity.this, "App will go forward", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(MainActivity.this,SigninManager.class));
+                        //User has already updated
+                        if (storageClass.getJwtToken().equalsIgnoreCase("Jwt_kali_xa")){
+                            startActivity(new Intent(MainActivity.this,SigninManager.class));
+                        }else {
+                            Intent intent = new Intent(MainActivity.this, DashBoardManager.class);
+                            intent.putExtra("who", jsonObject.optString("who"));
+                            startActivity(intent);
+                        }
+
                     } else {
-                        //noinspection SpellCheckingInspection
+                        //It is developer or update issue
                         Toast.makeText(MainActivity.this, "Hi Subash, How are you??", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(MainActivity.this,SigninManager.class));
+                        if (storageClass.getJwtToken().equalsIgnoreCase("Jwt_kali_xa")){
+                            startActivity(new Intent(MainActivity.this,SigninManager.class));
+                        }else {
+                            Intent intent = new Intent(MainActivity.this, DashBoardManager.class);
+                            intent.putExtra("who", jsonObject.optString("who"));
+                            startActivity(intent);
+                        }
                     }
                 } else if (serverContext.equalsIgnoreCase("maintainace")) {
                     Intent intent = new Intent(MainActivity.this, MaintainaceActivity.class);
@@ -137,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
+        jsonObjectRequest.setShouldCache(false);
         requestQueue.add(jsonObjectRequest);
 
     }
