@@ -1,4 +1,4 @@
-package app.nepaliapp.mblfree.fragments;
+package app.nepaliapp.mblfree.fragments.login;
 
 import android.content.Context;
 import android.content.Intent;

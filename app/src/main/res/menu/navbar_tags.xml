@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/homes"
+        android:title="Home"
+        android:icon="@drawable/home"/>
+
+
+
+    <item android:id="@+id/schematri"
+        android:title="Schematric"
+        android:icon="@drawable/schematric_daigram"/>
+
+    <item android:id="@+id/practical"
+        android:title="Practical"
+        android:icon="@drawable/practical"/>
+
+    <item android:id="@+id/Videos"
+        android:title="Videos"
+        android:icon="@drawable/video_icon"/>
+
+
+</menu>

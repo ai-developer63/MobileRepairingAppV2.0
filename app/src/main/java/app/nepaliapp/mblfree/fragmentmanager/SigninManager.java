@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,7 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import app.nepaliapp.mblfree.R;
-import app.nepaliapp.mblfree.fragments.LoginFragment;
+import app.nepaliapp.mblfree.fragments.login.LoginFragment;
 
 public class SigninManager extends AppCompatActivity {
 

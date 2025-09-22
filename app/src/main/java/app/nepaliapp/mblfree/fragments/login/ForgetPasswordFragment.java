@@ -1,4 +1,4 @@
-package app.nepaliapp.mblfree.fragments;
+package app.nepaliapp.mblfree.fragments.login;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -128,6 +128,13 @@ public class ForgetPasswordFragment extends Fragment {
                         sendEmail();
                         currentStage = ResetPasswordStage.OTP_VALIDATION;
                     }
+                } else if (currentStage.equals(ResetPasswordStage.OTP_VALIDATION)) {
+                    loadingOverlay.setVisibility(View.VISIBLE);
+                    emailEditText.setEnabled(false);
+                    actionButton.setVisibility(View.GONE);
+                    verifyOtp();
+
+
                 } else if (currentStage.equals(ResetPasswordStage.PASSWORD_UPDATE)) {
                     emailEditText.setEnabled(false);
                     if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
@@ -136,17 +143,10 @@ public class ForgetPasswordFragment extends Fragment {
                         passwordEditText.setError("Minimum 6 digit Password is Required");
                     } else {
                         actionButton.setVisibility(View.GONE);
-
+                        setPassword();
 
                         updateUIForCurrentStage();
                     }
-                } else if (currentStage.equals(ResetPasswordStage.OTP_VALIDATION)) {
-                    emailEditText.setEnabled(false);
-                    actionButton.setVisibility(View.GONE);
-                    verifyOtp();
-                    currentStage = ResetPasswordStage.PASSWORD_UPDATE;
-                    updateUIForCurrentStage();
-
                 }
 
             }
@@ -242,6 +242,7 @@ public class ForgetPasswordFragment extends Fragment {
                 obj.put("otp", otpEditTxt.getText().toString());
             } else if (currentStage.equals(ResetPasswordStage.PASSWORD_UPDATE)) {
                 obj.put("email", emailEditText.getText().toString());
+                obj.put("otp", otpEditTxt.getText().toString());
                 obj.put("newpassword", passwordEditText.getText().toString());
             } else {
                 obj.put("email", emailEditText.getText().toString());
@@ -252,37 +253,132 @@ public class ForgetPasswordFragment extends Fragment {
         return obj;
     }
 
+    private void setPassword() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url.getSetPassword(),
+                objectMaker(),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(context, "Password Updated Successfully", Toast.LENGTH_SHORT).show();
+                        loadingOverlay.setVisibility(View.GONE);
+                        fragmentChanger(new LoginFragment());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        loadingOverlay.setVisibility(View.GONE);
+                        actionButton.setVisibility(View.VISIBLE);
+
+                        if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(volleyError.networkResponse.data, "utf-8");
+                                JSONObject errorObj = new JSONObject(responseBody);
+
+                                // Server error message
+                                String errorMessage = errorObj.optString("error", "Something went wrong");
+                                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+
+                                if (errorMessage.toLowerCase().contains("password")) {
+                                    passwordEditText.setError(errorMessage);
+                                    passwordEditText.requestFocus();
+                                }
+
+                            } catch (Exception e) {
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+                        } else if (volleyError instanceof AuthFailureError) {
+                            Toast.makeText(context, "Authentication failed", Toast.LENGTH_SHORT).show();
+                        } else if (volleyError instanceof NetworkError) {
+                            Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+                        } else if (volleyError instanceof ServerError) {
+                            Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
+                        } else if (volleyError instanceof TimeoutError) {
+                            Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Unexpected Error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+
+        // Retry policy
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                30 * 1000, // 30s timeout
+                0,         // no retries
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
 
     private void verifyOtp() {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url.getCheckOtp(), objectMaker(), new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                Toast.makeText(context, "OTP Verified", Toast.LENGTH_SHORT).show();
-                loadingOverlay.setVisibility(View.GONE);
-                currentStage = ResetPasswordStage.PASSWORD_UPDATE;
-                emailEditText.setEnabled(false);
-                updateUIForCurrentStage();
-                adjustContainerHeight();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                if (volleyError instanceof AuthFailureError) {
-                    actionButton.setVisibility(View.VISIBLE);
-                    emailEditText.setError("Multi Account in our System");
-                } else if (volleyError instanceof NetworkError) {
-                    Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url.getCheckOtp(),
+                objectMaker(),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        // OTP Verified Successfully
+                        Toast.makeText(context, "OTP Verified", Toast.LENGTH_SHORT).show();
+                        loadingOverlay.setVisibility(View.GONE);
+                        currentStage = ResetPasswordStage.PASSWORD_UPDATE;
+                        emailEditText.setEnabled(false);
+                        updateUIForCurrentStage();
+                        adjustContainerHeight();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        loadingOverlay.setVisibility(View.GONE);
+                        actionButton.setVisibility(View.VISIBLE);
 
-                } else if (volleyError instanceof ServerError) {
-                    Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
+                        if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(volleyError.networkResponse.data, "utf-8");
+                                JSONObject errorObj = new JSONObject(responseBody);
 
-                } else if (volleyError instanceof TimeoutError) {
-                    Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, "SomeThing went Wrong", Toast.LENGTH_SHORT).show();
+                                // Handle server-side error message
+                                String errorMessage = errorObj.optString("error", "Something went wrong");
+                                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show();
+
+                                if (errorMessage.toLowerCase().contains("otp")) {
+                                    otpEditTxt.setError(errorMessage);
+                                    otpEditTxt.requestFocus();
+                                }
+
+                            } catch (Exception e) {
+                                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+                        } else if (volleyError instanceof AuthFailureError) {
+                            emailEditText.setError("Multiple accounts in our system");
+                            emailEditText.requestFocus();
+                        } else if (volleyError instanceof NetworkError) {
+                            Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+                        } else if (volleyError instanceof ServerError) {
+                            Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
+                        } else if (volleyError instanceof TimeoutError) {
+                            Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Unexpected Error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
-            }
-        });
+        );
+
+        // Add retry policy (same as sendEmail)
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                30 * 1000, // 30s timeout
+                0,         // no retries
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        requestQueue.add(jsonObjectRequest);
     }
 
 
@@ -301,7 +397,6 @@ public class ForgetPasswordFragment extends Fragment {
                         emailEditText.setEnabled(false);
                         updateUIForCurrentStage();
                         adjustContainerHeight();
-
                     }
                 },
                 new Response.ErrorListener() {

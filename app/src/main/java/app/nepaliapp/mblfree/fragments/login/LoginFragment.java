@@ -1,4 +1,4 @@
-package app.nepaliapp.mblfree.fragments;
+package app.nepaliapp.mblfree.fragments.login;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -55,7 +56,7 @@ public class LoginFragment extends Fragment {
     Url url;
     StorageClass storageClass;
     private RequestQueue requestQueue;
-
+    FrameLayout loadingOverlay;
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -72,6 +73,7 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         init(view);
+
 
         togglePasswordVisibility.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -171,6 +173,7 @@ public class LoginFragment extends Fragment {
         emailEditText = view.findViewById(R.id.EmailEditText);
         passwordEditText = view.findViewById(R.id.PasswordEdittext);
         togglePasswordVisibility = view.findViewById(R.id.togglePasswordVisibility);
+        loadingOverlay = view.findViewById(R.id.loadingOverlay);
         //initialization
         url = new Url();
         storageClass = new StorageClass(context);
@@ -188,6 +191,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void sendLoginRequest() {
+        loadingOverlay.setVisibility(View.VISIBLE);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url.getLogin(), objectMaker(),
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -206,6 +210,7 @@ public class LoginFragment extends Fragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        loadingOverlay.setVisibility(View.GONE);
                         handleErrorResponse(error);
                     }
                 });
