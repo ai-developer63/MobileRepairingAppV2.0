@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -11,6 +12,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -25,7 +27,7 @@ import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.fragments.userdash.HomeFragment;
 import app.nepaliapp.mblfree.fragments.userdash.PracticalFragment;
-import app.nepaliapp.mblfree.fragments.userdash.ShematricFragment;
+import app.nepaliapp.mblfree.fragments.userdash.ShecmatricCompaniesFragment;
 import app.nepaliapp.mblfree.fragments.userdash.VideosFragment;
 
 public class DashBoardManager extends AppCompatActivity {
@@ -34,7 +36,7 @@ public class DashBoardManager extends AppCompatActivity {
     StorageClass storageClass;
     BottomNavigationView btmNavigation;
     FrameLayout frameLayout;
-    LinearLayout mainLayout;
+    ConstraintLayout mainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,7 @@ public class DashBoardManager extends AppCompatActivity {
         init();
         ViewCompat.setOnApplyWindowInsetsListener(frameLayout, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
         });
 
@@ -87,7 +89,7 @@ public class DashBoardManager extends AppCompatActivity {
                     replaceFragments(new HomeFragment());
                     return true;
                 } else if (itemId == R.id.schematri) {
-                    replaceFragments(new ShematricFragment());
+                    replaceFragments(new ShecmatricCompaniesFragment());
                     return true;
                 } else if (itemId == R.id.Videos) {
                     replaceFragments(new VideosFragment());

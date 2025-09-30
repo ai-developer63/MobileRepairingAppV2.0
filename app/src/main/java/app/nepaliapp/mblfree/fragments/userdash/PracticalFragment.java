@@ -25,7 +25,7 @@ public class PracticalFragment extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                fragmentChanger(new ShematricFragment());
+                fragmentChanger(new ShecmatricCompaniesFragment());
                 updateNav("schematric");
             }
         };
@@ -54,7 +54,7 @@ public class PracticalFragment extends Fragment {
                 break;
             case "schematric":
                 menuId = R.id.schematri;
-                fragment = new ShematricFragment();
+                fragment = new ShecmatricCompaniesFragment();
                 break;
             case "videos":
                 menuId = R.id.Videos;

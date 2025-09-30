@@ -10,15 +10,21 @@ public class Url {
     String otpRequest = "api/auth/otpRequest";
     String checkOtp = "api/auth/verifyotp";
     String setPassword = "api/auth/setpassword";
+    String homeImage = "api/banner";
+    String CategoriesSystem = "api/categories";
+    String schematicsCompanies = "api/schematric/companies";
+    String schematicsLinks = "api/schematric/of/";
 
-    //Some period of time
-    String homeImage ="MblHomeimage";
-    String CategoriesSystem = "MblCategoryHome";
-    public String getHomeImage() {
-        return gitUrl+homeImage;
+    public String getSchematicsLinks(String companyName) {
+        return officialUrl+schematicsLinks+companyName;
     }
+
+    public String getSchematicsCompanies() {
+        return officialUrl+ schematicsCompanies;
+    }
+
     public String getCategoriesSystem() {
-        return gitUrl+CategoriesSystem;
+        return officialUrl + CategoriesSystem;
     }
 
     public String getSetPassword() {
@@ -33,6 +39,9 @@ public class Url {
         return officialUrl + login;
     }
 
+    public String getHomeImage() {
+        return officialUrl + homeImage;
+    }
 
     public String getSignup() {
         return officialUrl + signup;

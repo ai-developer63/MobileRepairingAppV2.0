@@ -55,7 +55,7 @@ public class VideosFragment extends Fragment {
                 break;
             case "schematric":
                 menuId = R.id.schematri;
-                fragment = new ShematricFragment();
+                fragment = new ShecmatricCompaniesFragment();
                 break;
             case "videos":
                 menuId = R.id.Videos;

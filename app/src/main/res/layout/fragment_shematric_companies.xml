@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.userdash.ShecmatricCompaniesFragment">
+
+    <!-- Top layout: simple search bar -->
+    <RelativeLayout
+        android:id="@+id/Toplayoutpart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <!-- Search bar -->
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:drawableStart="@drawable/search_icon"
+            android:drawablePadding="8dp"
+            android:hint="Search"
+            android:paddingStart="36dp"
+            android:paddingEnd="16dp"
+            android:background="@drawable/bg_rounded_edittext"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:textColorHint="#808080" />
+    </RelativeLayout>
+
+    <!-- Heading: Schematic Diagrams -->
+    <TextView
+        android:id="@+id/schematicHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Schematic Diagram"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_below="@id/Toplayoutpart"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Optional underline for heading -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/schematicHeading"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/light_gray"/>
+
+    <!-- RecyclerView for old schematic items -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/copanies"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/schematicHeading"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:clipToPadding="false"
+        android:padding="4dp"
+        android:scrollbars="vertical"/>
+</RelativeLayout>
