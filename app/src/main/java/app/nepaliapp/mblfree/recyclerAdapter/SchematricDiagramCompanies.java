@@ -37,6 +37,11 @@ public class SchematricDiagramCompanies extends RecyclerView.Adapter<SchematricD
         this.array = array;
         url = new Url();
     }
+    public void updateData(JSONArray newData) {
+        this.array = newData;
+        notifyDataSetChanged();
+    }
+
 
     @NonNull
     @Override

@@ -14,6 +14,11 @@ public class Url {
     String CategoriesSystem = "api/categories";
     String schematicsCompanies = "api/schematric/companies";
     String schematicsLinks = "api/schematric/of/";
+    String price = "NewMBLPrice";
+
+    public String getPrice() {
+        return gitUrl+price;
+    }
 
     public String getSchematicsLinks(String companyName) {
         return officialUrl+schematicsLinks+companyName;

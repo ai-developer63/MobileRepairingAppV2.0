@@ -1,9 +1,15 @@
 package app.nepaliapp.mblfree.fragments.servicefragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
@@ -17,6 +23,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +38,7 @@ import app.nepaliapp.mblfree.fragments.userdash.HomeFragment;
 import app.nepaliapp.mblfree.fragments.userdash.PracticalFragment;
 import app.nepaliapp.mblfree.fragments.userdash.ShecmatricCompaniesFragment;
 import app.nepaliapp.mblfree.fragments.userdash.VideosFragment;
+import app.nepaliapp.mblfree.recyclerAdapter.SchematricDiagramCompanies;
 import app.nepaliapp.mblfree.recyclerAdapter.SchematricModelAdapter;
 
 public class SchematricModelFragment extends Fragment {
@@ -38,6 +47,11 @@ public class SchematricModelFragment extends Fragment {
     Url url;
     RequestQueue requestQueue;
     StorageClass storageClass;
+    EditText searchText;
+    JSONArray jsonArrayData;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable searchRunnable;
+    SchematricModelAdapter adapter;
 
     public SchematricModelFragment() {
 
@@ -48,6 +62,7 @@ public class SchematricModelFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_schematric_model, container, false);
         init(view);
+        setupTextWatcher();
         Bundle bundle = getArguments();
         if (bundle != null) {
             String companyName = bundle.getString("companyName");
@@ -74,6 +89,7 @@ public class SchematricModelFragment extends Fragment {
     private void init(View view) {
         //find by id
         recyclerView = view.findViewById(R.id.models);
+        searchText = view.findViewById(R.id.searchEditText);
 
         //Urls
         url = new Url();
@@ -87,7 +103,8 @@ public class SchematricModelFragment extends Fragment {
         JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET, url.getSchematicsLinks(compinesName), null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray jsonArray) {
-                SchematricModelAdapter adapter = new SchematricModelAdapter(requireContext(), jsonArray);
+                jsonArrayData = jsonArray;
+                 adapter = new SchematricModelAdapter(requireContext(), jsonArray);
                 recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
                 recyclerView.setAdapter(adapter);
             }
@@ -145,5 +162,60 @@ public class SchematricModelFragment extends Fragment {
         }
 
         ((DashBoardManager) requireActivity()).navigateTo(fragment, menuId);
+    }
+    private void setupTextWatcher() {
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override public void afterTextChanged(Editable s) {}
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (searchRunnable != null) handler.removeCallbacks(searchRunnable);
+
+                searchRunnable = () -> runSearch(s.toString());
+                handler.postDelayed(searchRunnable, 300);
+            }
+        });
+    }
+
+
+    private void runSearch(String query) {
+        if (jsonArrayData == null) return;
+
+        try {
+            if (TextUtils.isEmpty(query)) {
+                adapter.updateData(jsonArrayData);
+            } else {
+                JSONArray filtered = findMatchingObjects(query, jsonArrayData);
+                adapter.updateData(filtered);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    private JSONArray findMatchingObjects(String searchText, JSONArray originalJsonArray) throws JSONException {
+        JSONArray matchingArray = new JSONArray();
+
+        for (int i = 0; i < originalJsonArray.length(); i++) {
+            JSONObject jsonObject = originalJsonArray.getJSONObject(i);
+            String name = jsonObject.optString("name");
+            if (containsPartialMatch(name, searchText)) {
+                matchingArray.put(jsonObject);
+            }
+        }
+
+        return matchingArray;
+    }
+
+    private boolean containsPartialMatch(String name, String searchText) {
+        name = name.toLowerCase();
+        searchText = searchText.toLowerCase();
+
+        for (int i = 0; i <= name.length() - searchText.length(); i++) {
+            if (name.regionMatches(i, searchText, 0, searchText.length())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

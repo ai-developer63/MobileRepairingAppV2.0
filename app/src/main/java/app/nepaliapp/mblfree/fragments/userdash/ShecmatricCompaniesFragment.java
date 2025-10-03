@@ -1,9 +1,14 @@
 package app.nepaliapp.mblfree.fragments.userdash;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
@@ -16,6 +21,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -34,6 +41,8 @@ public class ShecmatricCompaniesFragment extends Fragment {
     Url url;
     RequestQueue requestQueue;
     StorageClass storageClass;
+    EditText searchText;
+    JSONArray jsonArrayData;
 
     public ShecmatricCompaniesFragment() {
         // Required empty public constructor
@@ -45,7 +54,7 @@ public class ShecmatricCompaniesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shematric_companies, container, false);
         init(view);
         requestCompanies();
-
+        setupTextWatcher();
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -61,11 +70,13 @@ public class ShecmatricCompaniesFragment extends Fragment {
         return view;
     }
 
+
     private void init(View view) {
         recyclerView = view.findViewById(R.id.copanies);
         url = new Url();
         requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
         storageClass = new StorageClass(requireContext());
+        searchText = view.findViewById(R.id.searchEditText);
     }
 
 
@@ -73,15 +84,22 @@ public class ShecmatricCompaniesFragment extends Fragment {
         JsonObjectRequest companies = new JsonObjectRequest(Request.Method.GET, url.getSchematicsCompanies(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-                recyclerView.setLayoutManager(new GridLayoutManager(requireContext(),2));
+                jsonArrayData = jsonObject.optJSONArray("Schematric");
+                if (!isAdded()) {
+                    return;
+                }
+                recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
                 recyclerView.setAdapter(new SchematricDiagramCompanies(requireContext(), jsonObject.optJSONArray("Schematric")));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-
+                if (!isAdded()) {
+                    return;
+                }
+                Toast.makeText(requireContext(), "connecting to server", Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -129,5 +147,73 @@ public class ShecmatricCompaniesFragment extends Fragment {
 
         ((DashBoardManager) requireActivity()).navigateTo(fragment, menuId);
     }
+
+
+    private void setupTextWatcher() {
+        searchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (jsonArrayData == null) return;
+                String searchText = charSequence.toString().trim();
+                if (!TextUtils.isEmpty(searchText)) {
+                    try {
+                        JSONArray matchingArray = findMatchingObjects(searchText, jsonArrayData);
+                        if (isAdded()) {
+                            recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+                            recyclerView.setAdapter(new SchematricDiagramCompanies(requireContext(), matchingArray));
+                        }
+                    } catch (JSONException e) {
+
+                    }
+
+
+                } else {
+                    if (isAdded()) {
+                        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+                        recyclerView.setAdapter(new SchematricDiagramCompanies(requireContext(), jsonArrayData));
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    private JSONArray findMatchingObjects(String searchText, JSONArray originalJsonArray) throws JSONException {
+        JSONArray matchingArray = new JSONArray();
+
+        for (int i = 0; i < originalJsonArray.length(); i++) {
+            JSONObject jsonObject = originalJsonArray.getJSONObject(i);
+            String name = jsonObject.optString("name");
+            if (containsPartialMatch(name, searchText)) {
+                matchingArray.put(jsonObject);
+            }
+        }
+
+        return matchingArray;
+    }
+
+    private boolean containsPartialMatch(String name, String searchText) {
+        name = name.toLowerCase();
+        searchText = searchText.toLowerCase();
+
+        for (int i = 0; i <= name.length() - searchText.length(); i++) {
+            if (name.regionMatches(i, searchText, 0, searchText.length())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

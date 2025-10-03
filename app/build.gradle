@@ -43,5 +43,6 @@ dependencies {
     implementation 'org.imaginativeworld.whynotimagecarousel:whynotimagecarousel:2.1.0'
     implementation 'com.github.bumptech.glide:glide:5.0.5'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0' //for zoominFeature
+    implementation 'com.tom-roush:pdfbox-android:2.0.27.0'//for extraction of Text From pdf
 
 }

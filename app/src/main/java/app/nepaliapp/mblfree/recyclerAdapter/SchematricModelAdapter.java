@@ -14,6 +14,11 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
@@ -21,15 +26,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.MySingleton;
+import app.nepaliapp.mblfree.common.SubscriptionDialog;
+import app.nepaliapp.mblfree.common.Url;
 import app.nepaliapp.mblfree.fragments.servicefragment.PdfViewFragment;
 
 public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModelAdapter.ViewHolder> {
     Context context;
     JSONArray array;
+    RequestQueue requestQueue;
 
     public SchematricModelAdapter(Context context, JSONArray array) {
         this.context = context;
         this.array = array;
+        this.requestQueue = MySingleton.getInstance(context).getRequestQueue();
+    }
+
+    public void updateData(JSONArray newData) {
+        this.array = newData;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -53,7 +68,12 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
                 holder.clickAble.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        openPdfViewerFragment(obj.optString("pdfLink"));
+                        if (obj.optBoolean("paid")){
+                            openPdfViewerFragment(obj.optString("pdfLink"),obj.optString("companyName"));
+                        }else{
+                          showDialogWithPrice();
+                        }
+
                     }
                 });
             } catch (JSONException e) {
@@ -68,10 +88,11 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
         return array.length();
     }
 
-    private void openPdfViewerFragment(String pdfUrl) {
+    private void openPdfViewerFragment(String pdfUrl,String companyName) {
         PdfViewFragment pdfViewFragmet = new PdfViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString("pdf_url", pdfUrl);
+        bundle.putString("name", companyName);
         pdfViewFragmet.setArguments(bundle);
         FragmentTransaction transaction = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frameLayoutInMain, pdfViewFragmet);
@@ -90,5 +111,21 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
             logoImage = itemView.findViewById(R.id.logoCompany);
             clickAble = itemView.findViewById(R.id.cardOkModel);
         }
+    }
+
+    private void showDialogWithPrice(){
+        Url url= new Url();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getPrice(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                SubscriptionDialog.show(context,jsonObject);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        requestQueue.add(request);
     }
 }
