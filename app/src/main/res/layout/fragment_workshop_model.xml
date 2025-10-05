@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.userdash.PracticalFragment">
+    tools:context=".fragments.workshop.WorkshopModelFragment">
 
     <!-- Top layout: simple search bar -->
     <RelativeLayout
@@ -35,7 +35,7 @@
         android:id="@+id/schematicHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Workshop Pick Company"
+        android:text="Select Model"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/black"

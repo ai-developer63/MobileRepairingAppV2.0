@@ -17,4 +17,5 @@
     <color name="placeholder_bg_light">#EFEFEF</color>
     <color name="teal_700">#FF018786</color>
     <color name="light_gray">#DDDDDD</color>
+    <color name="darker_gray">#616161</color>
 </resources>

@@ -14,16 +14,16 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/logoImage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             android:scaleType="centerCrop"
             app:shapeAppearanceOverlay="@style/CircleImage"
             android:src="@mipmap/ic_launcher"
             app:strokeColor="@color/black"
-            app:strokeWidth="1dp"/>
+            app:strokeWidth="1dp" />
 
     </RelativeLayout>
 
@@ -32,6 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/Toplayout">
+
         <androidx.cardview.widget.CardView
             android:id="@+id/ImageViewCard"
             android:layout_width="match_parent"
@@ -63,6 +64,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/recyclerLayoutVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recyclerLayoutCategories"
+        android:background="@color/white">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homeVideoRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+
     <!-- Loading Overlay -->
     <FrameLayout
         android:id="@+id/loadingOverlay"

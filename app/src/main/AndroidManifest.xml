@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MobileRepairing">
         <activity
+            android:name=".activity.VideoPlayingActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:exported="false" />
+        <activity
             android:name=".fragmentmanager.DashBoardManager"
             android:exported="false" />
         <activity

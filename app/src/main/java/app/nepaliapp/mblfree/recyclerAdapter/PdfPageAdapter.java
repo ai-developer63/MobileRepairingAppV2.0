@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.chrisbanes.photoview.PhotoView;
 
-public class PdfPageAdapter extends RecyclerView.Adapter<PdfPageAdapter.PageViewHolder> {
+public class PdfPageAdapter extends RecyclerView.Adapter<PdfPageAdapter.ViewHolder> {
 
-    private final Context context;
+     Context context;
     private final PdfRenderer pdfRenderer;
 
     public PdfPageAdapter(Context context, PdfRenderer pdfRenderer) {
@@ -22,7 +22,7 @@ public class PdfPageAdapter extends RecyclerView.Adapter<PdfPageAdapter.PageView
 
     @NonNull
     @Override
-    public PageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         PhotoView photoView = new PhotoView(parent.getContext());
         photoView.setLayoutParams(new RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -31,14 +31,14 @@ public class PdfPageAdapter extends RecyclerView.Adapter<PdfPageAdapter.PageView
         photoView.setAdjustViewBounds(true);
         photoView.setMinimumScale(1f);
         photoView.setMaximumScale(5f);
-        return new PageViewHolder(photoView);
+        return new ViewHolder(photoView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PdfRenderer.Page page = pdfRenderer.openPage(position);
 
-        float scale = 6f; // clarity
+        float scale = 6f; // higher number more clear but phone processor is highly used.
         Bitmap bitmap = Bitmap.createBitmap(
                 (int)(page.getWidth() * scale),
                 (int)(page.getHeight() * scale),
@@ -55,10 +55,10 @@ public class PdfPageAdapter extends RecyclerView.Adapter<PdfPageAdapter.PageView
         return pdfRenderer.getPageCount();
     }
 
-    static class PageViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         PhotoView photoView;
 
-        public PageViewHolder(@NonNull PhotoView itemView) {
+        public ViewHolder(@NonNull PhotoView itemView) {
             super(itemView);
             photoView = itemView;
         }

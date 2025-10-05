@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +46,13 @@ public class PdfViewFragment extends Fragment {
     private PdfRenderer pdfRenderer;
     private ParcelFileDescriptor fileDescriptor;
     private RecyclerView recyclerView;
-    private FrameLayout loadingOverlay;
+    private LinearLayout loadingOverlay;
+    ProgressBar progressBar;
     private TextView pageNumberTextView;
     private ImageButton goToPageButton, searchButton;
     private List<String> extractedTextPages = new ArrayList<>();
+    TextView progressText;
+
 
     @Nullable
     @Override
@@ -107,6 +112,8 @@ public class PdfViewFragment extends Fragment {
         pageNumberTextView = view.findViewById(R.id.pageNumberTextView);
         goToPageButton = view.findViewById(R.id.goToPageButton);
         searchButton = view.findViewById(R.id.searchButton);
+        progressBar = view.findViewById(R.id.progressBar);
+        progressText = view.findViewById(R.id.progressText);
 
     }
 
@@ -171,18 +178,35 @@ public class PdfViewFragment extends Fragment {
         }
 
         loadingOverlay.setVisibility(View.VISIBLE);
+
         new Thread(() -> {
             try {
                 URL url = new URL(pdfUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
+
+                int fileLength = connection.getContentLength(); // total size in bytes
+
                 InputStream input = connection.getInputStream();
                 FileOutputStream output = new FileOutputStream(pdfFile);
 
                 byte[] buffer = new byte[1024];
                 int bytesRead;
+                long totalDownloaded = 0;
+
                 while ((bytesRead = input.read(buffer)) != -1) {
                     output.write(buffer, 0, bytesRead);
+                    totalDownloaded += bytesRead;
+
+                    if (fileLength > 0 && getActivity() != null) { // avoid divide by zero
+                        int progress = (int) ((totalDownloaded * 100) / fileLength);
+
+                        getActivity().runOnUiThread(() -> {
+                            // Update your ProgressBar or TextView here
+                            progressBar.setProgress(progress);
+                            progressText.setText(progress + "%");
+                        });
+                    }
                 }
 
                 output.close();
@@ -203,6 +227,7 @@ public class PdfViewFragment extends Fragment {
             }
         }).start();
     }
+
 
     private void openRendererAndSetup(File file) {
         try {

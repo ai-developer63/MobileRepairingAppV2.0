@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -22,6 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import org.imaginativeworld.whynotimagecarousel.ImageCarousel;
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
@@ -38,15 +40,18 @@ import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
+import app.nepaliapp.mblfree.fragmentmanager.DashBoardManager;
 import app.nepaliapp.mblfree.recyclerAdapter.CategoriesAdapter;
+import app.nepaliapp.mblfree.recyclerAdapter.HomeVideoCardAdapter;
 
 public class HomeFragment extends Fragment {
     ImageCarousel carousel;
     Url url;
     RequestQueue requestQueue;
-    RecyclerView categoriesRecycler;
+    RecyclerView categoriesRecycler, videoRecyclerView;
     StorageClass storageClass;
     FrameLayout loadingOverlay;
+    ShapeableImageView profileImage;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -57,13 +62,23 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         init(view);
+        videoRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         loadingOverlay.setVisibility(View.VISIBLE);
         carousel.registerLifecycle(getLifecycle());
         List<CarouselItem> items = new ArrayList<>();
         carousel.setImageScaleType(ImageView.ScaleType.FIT_XY);
         requestImage(items);
         requestCategories();
+        requestHomeVideos();
         Log.d("beartoken", storageClass.getJwtToken());
+
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragmentChanger(new ProfileFragment());
+            }
+        });
+
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
@@ -78,6 +93,38 @@ public class HomeFragment extends Fragment {
         );
         return view;
     }
+
+
+    private void requestHomeVideos() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getHomeVideos(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                if (!isAdded()){
+                    return;
+                }
+                JSONArray array = jsonObject.optJSONArray("videos");
+                HomeVideoCardAdapter adapter = new HomeVideoCardAdapter(requireContext(),array);
+                videoRecyclerView.setAdapter(adapter);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                if (!isAdded()){
+                    return;
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + storageClass.getJwtToken());
+                return headers;
+            }
+        };
+        requestQueue.add(request);
+
+    }
+
 
     private void requestCategories() {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url.getCategoriesSystem(), null, new Response.Listener<JSONObject>() {
@@ -101,7 +148,7 @@ public class HomeFragment extends Fragment {
             public void onErrorResponse(VolleyError volleyError) {
                 loadingOverlay.setVisibility(View.GONE);
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -141,7 +188,7 @@ public class HomeFragment extends Fragment {
             public void onErrorResponse(VolleyError volleyError) {
 
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -157,6 +204,8 @@ public class HomeFragment extends Fragment {
         carousel = view.findViewById(R.id.carousel);
         categoriesRecycler = view.findViewById(R.id.categories);
         loadingOverlay = view.findViewById(R.id.loadingOverlay);
+        videoRecyclerView = view.findViewById(R.id.homeVideoRecycler);
+        profileImage = view.findViewById(R.id.logoImage);
         //initialization
         url = new Url();
         requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
@@ -173,6 +222,11 @@ public class HomeFragment extends Fragment {
         builder.show();
 
     }
+    private void fragmentChanger(Fragment fragment) {
+        if (getActivity() != null && getActivity() instanceof DashBoardManager) {
+            ((DashBoardManager) getActivity()).replaceFragments(fragment);
+        }
 
+    }
 
 }

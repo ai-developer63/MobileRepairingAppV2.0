@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.workshop.WorkshopPracticalFragment">
+
+    <!-- Heading: Schematic Diagrams -->
+    <TextView
+        android:id="@+id/schematicHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Charging Port As below"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Optional underline for heading -->
+    <View
+        android:id="@+id/oneline"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/schematicHeading"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/light_gray"/>
+
+    <androidx.media3.ui.PlayerView
+        android:layout_margin="5dp"
+        android:id="@+id/practicalVideoPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_below="@id/oneline"
+        android:layout_marginTop="5dp"
+        android:keepScreenOn="true"
+        app:show_timeout="0"
+        app:use_controller="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerviewForPractical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/practicalVideoPlayer"
+        android:layout_marginTop="10dp" />
+
+
+</RelativeLayout>

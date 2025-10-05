@@ -16,6 +16,13 @@ public class Url {
     String schematicsLinks = "api/schematric/of/";
     String price = "NewMBLPrice";
 
+    String homeVideos = "api/getAllHomeVideos";
+
+    public String getHomeVideos() {
+        return officialUrl + homeVideos;
+    }
+
+
     public String getPrice() {
         return gitUrl+price;
     }
