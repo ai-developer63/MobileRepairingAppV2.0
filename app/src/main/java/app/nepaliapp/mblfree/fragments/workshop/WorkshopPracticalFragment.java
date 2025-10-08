@@ -21,7 +21,10 @@ public class WorkshopPracticalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_workshop_practical, container, false);
-        // Inflate the layout for this fragment
+
+
         return view;
     }
+
+
 }

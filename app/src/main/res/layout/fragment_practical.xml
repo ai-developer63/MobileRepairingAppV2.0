@@ -35,7 +35,7 @@
         android:id="@+id/schematicHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Workshop Pick Company"
+        android:text="Practice Hub"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -55,7 +55,7 @@
 
     <!-- RecyclerView for old schematic items -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/copanies"
+        android:id="@+id/companies"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/schematicHeading"

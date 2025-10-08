@@ -52,8 +52,6 @@ public class SchematricDiagramCompanies extends RecyclerView.Adapter<SchematricD
 
     @Override
     public void onBindViewHolder(@NonNull SchematricDiagramCompanies.ViewHolder holder, int position) {
-
-        for (int i = 0; i <= array.length(); i++) {
             try {
                 JSONObject obj = array.getJSONObject(position);
                 holder.logo_Name.setText(obj.optString("name"));
@@ -70,7 +68,6 @@ public class SchematricDiagramCompanies extends RecyclerView.Adapter<SchematricD
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-        }
     }
 
     @Override

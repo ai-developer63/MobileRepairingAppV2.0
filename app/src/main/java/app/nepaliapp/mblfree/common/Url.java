@@ -1,5 +1,9 @@
 package app.nepaliapp.mblfree.common;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 public class Url {
 
     String gitUrl = "https://raw.githubusercontent.com/ai-developer63/just/gh-pages/";
@@ -15,8 +19,24 @@ public class Url {
     String schematicsCompanies = "api/schematric/companies";
     String schematicsLinks = "api/schematric/of/";
     String price = "NewMBLPrice";
-
     String homeVideos = "api/getAllHomeVideos";
+     //workshop
+    String requestWorkShopCompany = "api/topics/allcompanies";
+    String requestWorkShopModel = "api/topics/subcompany/";
+    String requestWorkShopTopic = "api/getAlltopics";
+
+    public String getRequestWorkShopTopic() {
+       return officialUrl+requestWorkShopTopic;
+    }
+
+
+    public String getRequestWorkShopModel(String companyName) {
+        return officialUrl+requestWorkShopModel+companyName;
+    }
+
+    public String getRequestWorkShopCompany() {
+        return officialUrl+requestWorkShopCompany;
+    }
 
     public String getHomeVideos() {
         return officialUrl + homeVideos;

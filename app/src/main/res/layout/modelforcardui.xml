@@ -15,6 +15,7 @@
         android:padding="16dp"
         android:background="@color/white">
 
+        <!-- Company Logo -->
         <ImageView
             android:id="@+id/logoCompany"
             android:layout_width="72dp"
@@ -22,6 +23,7 @@
             android:layout_centerHorizontal="true"
             android:src="@mipmap/ic_launcher" />
 
+        <!-- Company Name -->
         <TextView
             android:id="@+id/CompanyName"
             android:layout_width="wrap_content"
@@ -32,6 +34,16 @@
             android:textStyle="bold"
             android:textColor="@android:color/black"
             android:layout_marginTop="8dp"/>
+
+        <!-- Lock Icon Overlay -->
+        <ImageView
+            android:id="@+id/lockIcon"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/lock_icon"
+            android:visibility="gone" /> <!-- hidden by default -->
 
     </RelativeLayout>
 

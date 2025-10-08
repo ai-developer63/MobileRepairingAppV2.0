@@ -12,7 +12,7 @@
         android:id="@+id/schematicHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What you want to Learn today?"
+        android:text="Your workshop, your choice"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -21,6 +21,7 @@
 
     <!-- Optional underline for heading -->
     <View
+        android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@id/schematicHeading"
@@ -29,16 +30,29 @@
         android:layout_marginEnd="16dp"
         android:background="@color/light_gray"/>
 
+    <TextView
+        android:id="@+id/ModelName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/line"
+        android:layout_centerInParent="true"/>
+
     <!-- RecyclerView for old schematic items -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/copanies"
+        android:id="@+id/topics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/schematicHeading"
+        android:layout_below="@id/ModelName"
         android:layout_marginTop="12dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:clipToPadding="false"
         android:padding="4dp"
-        android:scrollbars="vertical"/>
+        android:scrollbars="vertical" />
 </RelativeLayout>

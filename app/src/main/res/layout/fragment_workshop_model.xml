@@ -55,7 +55,7 @@
 
     <!-- RecyclerView for old schematic items -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/copanies"
+        android:id="@+id/workShopModels"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/schematicHeading"
