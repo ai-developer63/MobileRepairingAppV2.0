@@ -26,7 +26,7 @@
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/OtherVideos"
+        android:id="@+id/recyclerViewOtherVideos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/titleOfTheVideo"

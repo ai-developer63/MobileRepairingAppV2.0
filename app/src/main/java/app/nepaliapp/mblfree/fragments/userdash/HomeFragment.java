@@ -136,7 +136,8 @@ public class HomeFragment extends Fragment {
                     result = jsonObject.getJSONArray("categories");
                     FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     CategoriesAdapter adapter = new CategoriesAdapter(requireContext(), result, fragmentManager);
-                    categoriesRecycler.setLayoutManager(new GridLayoutManager(requireContext(), 4));
+                   GridLayoutManager layoutManager = new GridLayoutManager(requireContext(),4);
+                    categoriesRecycler.setLayoutManager(layoutManager);
                     categoriesRecycler.setAdapter(adapter);
                     loadingOverlay.setVisibility(View.GONE);
                 } catch (JSONException e) {

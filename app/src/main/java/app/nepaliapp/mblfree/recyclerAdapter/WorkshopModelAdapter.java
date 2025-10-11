@@ -23,6 +23,12 @@ import com.bumptech.glide.Glide;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.SubscriptionDialog;
@@ -34,11 +40,13 @@ public class WorkshopModelAdapter extends RecyclerView.Adapter<WorkshopModelAdap
     Context context;
     JSONArray array;
     RequestQueue requestQueue;
+    List<JSONObject> sortedList;
 
     public WorkshopModelAdapter(Context context, JSONArray array) {
         this.context = context;
         this.array = array;
         this.requestQueue = MySingleton.getInstance(context).getRequestQueue();
+        sortArray();
     }
 
     @NonNull
@@ -51,41 +59,58 @@ public class WorkshopModelAdapter extends RecyclerView.Adapter<WorkshopModelAdap
         this.array = newData;
         notifyDataSetChanged();
     }
+    private void sortArray() {
+        sortedList = new ArrayList<>();
+        for (int i = 0; i < array.length(); i++) {
+            try {
+                sortedList.add(array.getJSONObject(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Free first, Paid later
+        Collections.sort(sortedList, new Comparator<JSONObject>() {
+            @Override
+            public int compare(JSONObject o1, JSONObject o2) {
+                boolean paid1 = o1.optBoolean("ispaid", false);
+                boolean paid2 = o2.optBoolean("ispaid", false);
+                return Boolean.compare(paid2, paid1); // free (false) first
+            }
+        });
+    }
+
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        try {
-            JSONObject obj = array.getJSONObject(position);
-            holder.logo_Name.setText(obj.optString("name"));
-            Glide.with(holder.logoImage.getContext())
-                    .load(obj.optString("logo"))
-                    .error(R.mipmap.ic_launcher)
-                    .into(holder.logoImage);
-            boolean isPaid = obj.optBoolean("ispaid", false);
+        JSONObject obj = sortedList.get(position);
+        holder.logo_Name.setText(obj.optString("name"));
+        Glide.with(holder.logoImage.getContext())
+                .load(obj.optString("logo"))
+                .error(R.mipmap.ic_launcher)
+                .into(holder.logoImage);
+        boolean isPaid = obj.optBoolean("ispaid", false);
 
-            if (!isPaid) {
-                holder.lockIcon.setVisibility(View.VISIBLE);
-                holder.itemView.setAlpha(0.7f);
-            } else {
-                holder.lockIcon.setVisibility(View.GONE);
-                holder.itemView.setAlpha(1f);
-            }
-
-            holder.clickAble.setOnClickListener(v -> {
-                if (!isPaid) {
-                    showDialogWithPrice();
-                } else {
-                   changeFragment(obj.optString("companyName"),obj.optString("name"));
-                }
-            });
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+        if (!isPaid) {
+            holder.lockIcon.setVisibility(View.VISIBLE);
+            holder.itemView.setAlpha(0.7f);
+        } else {
+            holder.lockIcon.setVisibility(View.GONE);
+            holder.itemView.setAlpha(1f);
         }
+
+        holder.clickAble.setOnClickListener(v -> {
+            if (!isPaid) {
+                showDialogWithPrice();
+            } else {
+               changeFragment(obj.optString("companyName"),obj.optString("name"));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return array.length();
+        return sortedList == null ? 0 : sortedList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

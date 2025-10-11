@@ -8,10 +8,10 @@
 
     <!-- Heading: Schematic Diagrams -->
     <TextView
-        android:id="@+id/schematicHeading"
+        android:id="@+id/topicHead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Change Charging Port As below"
+        android:text=""
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/black"
@@ -24,7 +24,7 @@
         android:id="@+id/oneline"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_below="@id/schematicHeading"
+        android:layout_below="@id/topicHead"
         android:layout_marginTop="4dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -39,7 +39,8 @@
         android:layout_marginTop="5dp"
         android:keepScreenOn="true"
         app:show_timeout="0"
-        app:use_controller="true" />
+        app:use_controller="true"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerviewForPractical"

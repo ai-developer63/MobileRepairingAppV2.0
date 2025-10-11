@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp">
+
+    <TextView
+        android:id="@+id/StepNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Step"
+        android:textColor="@color/Colour_After_click"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/StepHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/StepNumber"
+        android:layout_centerInParent="true"
+        android:text="Heading"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"/>
+
+    <app.nepaliapp.mblfree.common.ImageCarouselView
+        android:id="@+id/carousel"
+        app:autoPlay="false"
+        app:showCaption="false"
+        app:showNavigationButtons="true"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/StepHeading"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+
+    <TextView
+        android:id="@+id/StepDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/carousel"
+        android:layout_marginTop="10dp"
+        android:text="@string/samplertext"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+</RelativeLayout>

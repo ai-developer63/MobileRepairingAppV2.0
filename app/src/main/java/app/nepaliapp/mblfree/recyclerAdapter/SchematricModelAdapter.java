@@ -36,6 +36,7 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
     JSONArray array;
     RequestQueue requestQueue;
 
+
     public SchematricModelAdapter(Context context, JSONArray array) {
         this.context = context;
         this.array = array;
@@ -56,7 +57,7 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        for (int i = 0; i <= array.length(); i++) {
+
             try {
                 JSONObject obj = array.getJSONObject(position);
                 holder.logo_Name.setText(obj.optString("name"));
@@ -89,7 +90,7 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
             }
         }
 
-    }
+
 
     @Override
     public int getItemCount() {

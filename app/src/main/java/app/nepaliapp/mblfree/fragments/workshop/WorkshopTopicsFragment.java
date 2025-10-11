@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +32,8 @@ import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
+import app.nepaliapp.mblfree.fragmentmanager.DashBoardManager;
+import app.nepaliapp.mblfree.fragments.userdash.PracticalFragment;
 import app.nepaliapp.mblfree.recyclerAdapter.WorkshopTopicAdapter;
 
 public class WorkshopTopicsFragment extends Fragment {
@@ -55,6 +60,18 @@ public class WorkshopTopicsFragment extends Fragment {
             String modelName = getArguments().getString("modelName");
             ModelName.setText(modelName);
             TopicRequest(companyName,modelName);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                changeFragment(companyName,modelName);
+            }
+        };
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(),
+                callback
+        );
         }
         return view;
     }
@@ -114,6 +131,17 @@ public class WorkshopTopicsFragment extends Fragment {
         }
         return obj;
 
+    }
+    private void changeFragment(String companyName,String modelName) {
+        WorkshopModelFragment workshopModelFragment = new WorkshopModelFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("companyName", companyName);
+        bundle.putString("modelName", modelName);
+        workshopModelFragment.setArguments(bundle);
+        FragmentTransaction transaction = ((FragmentActivity) requireContext()).getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayoutInMain, workshopModelFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 }

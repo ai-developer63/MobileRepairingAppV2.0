@@ -8,6 +8,7 @@ public class Url {
 
     String gitUrl = "https://raw.githubusercontent.com/ai-developer63/just/gh-pages/";
     String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
+//    String officialUrl = "https://pmbl.subhakhar.xyz/";
     String app_checkup = "appcheck";
     String login = "api/auth/login";
     String signup = "api/auth/signup";
@@ -24,6 +25,11 @@ public class Url {
     String requestWorkShopCompany = "api/topics/allcompanies";
     String requestWorkShopModel = "api/topics/subcompany/";
     String requestWorkShopTopic = "api/getAlltopics";
+    String requestWorkShopSteps = "api/getSteps";
+
+    public String getRequestWorkShopSteps() {
+        return officialUrl+requestWorkShopSteps;
+    }
 
     public String getRequestWorkShopTopic() {
        return officialUrl+requestWorkShopTopic;

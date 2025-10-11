@@ -7,24 +7,29 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.datasource.HttpDataSource;
+import androidx.media3.exoplayer.DefaultLoadControl;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.ui.PlayerView;
-import androidx.media3.exoplayer.DefaultLoadControl;
-import java.util.HashMap;
-import java.util.Map;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.CustomHttpDataSourceFactory;
 import app.nepaliapp.mblfree.common.StorageClass;
+import app.nepaliapp.mblfree.recyclerAdapter.HomeVideoCardAdapter;
 
 @UnstableApi
 public class VideoPlayingActivity extends AppCompatActivity {
+    RecyclerView otherVideoRecycler;
     private PlayerView playerView;
     private TextView videoTitle;
     private ExoPlayer player;
@@ -35,7 +40,33 @@ public class VideoPlayingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_playing);
+        otherVideoRecycler = findViewById(R.id.recyclerViewOtherVideos);
+        otherVideoRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        String jsonData = getIntent().getStringExtra("videoListJson");
+        if (jsonData != null) {
+            JSONArray videosArray = null;
+            try {
+                videosArray = new JSONArray(jsonData);
+                // Filter out currently playing video
+                JSONArray filteredArray = new JSONArray();
+                String currentVideoUrl = getIntent().getStringExtra("videoUrl");
+                for (int i = 0; i < videosArray.length(); i++) {
+                    JSONObject obj = videosArray.optJSONObject(i);
+                    if (!obj.optString("link").equals(currentVideoUrl)) {
+                        filteredArray.put(obj);
+                    }
+                }
+                // Pass filteredArray to RecyclerView adapter
+                HomeVideoCardAdapter adapter = new HomeVideoCardAdapter(this, filteredArray);
+                otherVideoRecycler.setAdapter(adapter);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
 
+
+
+
+        }
         playerView = findViewById(R.id.player_view);
         videoTitle = findViewById(R.id.titleOfTheVideo);
         videoTitle.setText("Loading...");

@@ -53,6 +53,7 @@ public class HomeVideoCardAdapter extends RecyclerView.Adapter<HomeVideoCardAdap
                 Intent intent = new Intent(context, VideoPlayingActivity.class);
                 intent.putExtra("videoUrl", object.optString("link"));
                 intent.putExtra("videoTitle", object.optString("title"));
+                intent.putExtra("videoListJson", array.toString());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

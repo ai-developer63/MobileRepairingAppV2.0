@@ -18,4 +18,16 @@
     <color name="teal_700">#FF018786</color>
     <color name="light_gray">#DDDDDD</color>
     <color name="darker_gray">#616161</color>
+
+    <!-- Background -->
+    <color name="lightGray">#F5F5F5</color>
+    <color name="cardGray">#EEEEEE</color>
+
+    <!-- Text -->
+    <color name="primaryText">#212121</color>
+    <color name="secondaryText">#757575</color>
+    <color name="subtleAccent">#1976D2</color> <!-- For subscription / highlights -->
+
+    <!-- CardView shadow color if needed -->
+    <color name="cardShadow">#BDBDBD</color>
 </resources>

@@ -1,18 +1,364 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.userdash.ProfileFragment">
+    android:background="@color/white">
 
-
-    <ImageView
-        android:id="@+id/logout"
+    <!-- ========================================================= -->
+    <!-- 1. FIXED PROFILE HEADER AND STATUS AREA -->
+    <!-- This section will stay visible at the top as the user scrolls -->
+    <!-- ========================================================= -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clProfileHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"
-        android:layout_centerInParent="true"/>
+        android:paddingHorizontal="16dp"
+        android:paddingTop="24dp"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Profile Photo (Using ShapeableImageView for border/modern look) -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivProfilePhoto"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@mipmap/ic_launcher"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircleImage"
+            app:strokeColor="@color/lightGray"
+            app:strokeWidth="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"/>
 
+        <!-- User Details Group -->
+        <LinearLayout
+            android:id="@+id/llUserDetails"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            app:layout_constraintTop_toTopOf="@id/ivProfilePhoto"
+            app:layout_constraintBottom_toBottomOf="@id/ivProfilePhoto"
+            app:layout_constraintStart_toEndOf="@id/ivProfilePhoto"
+            app:layout_constraintEnd_toEndOf="parent">
 
-</RelativeLayout>
+            <!-- Greeting & Username -->
+            <TextView
+                android:id="@+id/tvHelloUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Namaste, Subash"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/primaryText"/>
+
+            <!-- Welcome text in Nepali -->
+            <TextView
+                android:id="@+id/tvWelcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mobile repairing मा स्वागत छ"
+                android:textSize="14sp"
+                android:textColor="@color/secondaryText"
+                android:layout_marginTop="2dp"/>
+
+            <!-- Country -->
+            <TextView
+                android:id="@+id/tvCountry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nepal"
+                android:textSize="14sp"
+                android:textColor="@color/subtleAccent"
+                android:drawablePadding="4dp"
+                android:drawableStart="@drawable/ic_location"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- Account Status Card (Prominent accent color) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvAccountStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@color/colorAccentDemo"
+            app:contentPadding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/ivProfilePhoto">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Account type -->
+                <TextView
+                    android:id="@+id/tvAccountType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Free Account"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"/>
+
+                <!-- Subscription details (only visible if paid) -->
+                <TextView
+                    android:id="@+id/tvSubscription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remaining Days: 15"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
+
+                <!-- NEW: Upgrade Button for Free Account -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUpgrade"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="UPGRADE TO PREMIUM"
+                    android:textColor="@color/subtleAccent"
+                    android:backgroundTint="@color/white"
+                    app:cornerRadius="8dp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"
+                    android:paddingVertical="12dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ========================================================= -->
+    <!-- 2. SCROLLING MENU AREA -->
+    <!-- This section scrolls and is constrained below the fixed header -->
+    <!-- ========================================================= -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/clProfileHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="24dp">
+
+            <!-- Menu Title -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Account &amp; Services"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/primaryText"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- ========================================================= -->
+            <!-- ACTION BUTTONS (Menu Items) -->
+            <!-- ========================================================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Support Button -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/menu_support"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/cardGray"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_support"
+                            app:tint="@color/subtleAccent" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Support"
+                            android:textColor="@color/primaryText"
+                            android:textSize="17sp"
+                            android:layout_marginStart="16dp"/>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            app:tint="@color/secondaryText"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Redeem Coupon Button -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/menu_redeem_coupon"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/cardGray"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_copoun"
+                            app:tint="@color/subtleAccent" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Redeem Coupon"
+                            android:textColor="@color/primaryText"
+                            android:textSize="17sp"
+                            android:layout_marginStart="16dp"/>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            app:tint="@color/secondaryText"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Request Services Button -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/menu_request_services"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/cardGray"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_services"
+                            app:tint="@color/subtleAccent" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Request Services"
+                            android:textColor="@color/primaryText"
+                            android:textSize="17sp"
+                            android:layout_marginStart="16dp"/>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            app:tint="@color/secondaryText"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Visual Separator -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/lightGray"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Logout Button (Distinctive styling) -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/menu_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/cardGray"
+                    android:layout_marginTop="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_logout"
+                            app:tint="@color/red" /> <!-- Using a distinct color for logout -->
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Logout"
+                            android:textColor="@color/red"
+                            android:textSize="17sp"
+                            android:layout_marginStart="16dp"
+                            android:textStyle="bold"/>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_forward"
+                            app:tint="@color/secondaryText"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
