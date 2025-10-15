@@ -14,6 +14,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobileRepairing">
+
+        <activity
+            android:name=".activity.CourseActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"
+            android:exported="false" />
         <activity
             android:name=".activity.VideoPlayingActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout"

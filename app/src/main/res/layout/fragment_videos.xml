@@ -1,16 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.userdash.VideosFragment">
 
+    <!-- Heading -->
     <TextView
+        android:id="@+id/text_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="welcome to Video Fragment"
-        android:layout_centerInParent="true"
+        android:text="  Videos"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_centerHorizontal="true"
-        android:textSize="25sp"/>
+        android:drawableLeft="@drawable/video"
+        android:drawableTint="@color/blue"/>
+
+    <!-- Underline -->
+    <View
+        android:id="@+id/heading_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/text_heading"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/light_gray" />
+
+    <!-- TabLayout -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutVideos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/heading_line"
+        android:layout_marginTop="8dp"
+        app:tabIndicatorColor="@color/blue"
+        app:tabIndicatorHeight="3dp"
+        app:tabSelectedTextColor="@color/blue"
+        app:tabTextColor="@color/gray"
+        app:tabMode="fixed"
+        app:tabGravity="fill" />
+
+    <!-- Divider under Tab -->
+    <View
+        android:id="@+id/tab_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/tabLayoutVideos"
+        android:background="@color/light_gray" />
+
+    <!-- ViewPager for Tab Content -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerVideos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tab_divider"
+        android:overScrollMode="never"
+        android:layout_marginTop="8dp" />
 
 </RelativeLayout>

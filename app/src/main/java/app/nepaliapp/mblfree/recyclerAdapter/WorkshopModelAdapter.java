@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,10 +31,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.SubscriptionDialog;
 import app.nepaliapp.mblfree.common.Url;
-import app.nepaliapp.mblfree.fragments.workshop.WorkshopModelFragment;
 import app.nepaliapp.mblfree.fragments.workshop.WorkshopTopicsFragment;
 
 public class WorkshopModelAdapter extends RecyclerView.Adapter<WorkshopModelAdapter.ViewHolder> {
@@ -41,12 +42,14 @@ public class WorkshopModelAdapter extends RecyclerView.Adapter<WorkshopModelAdap
     JSONArray array;
     RequestQueue requestQueue;
     List<JSONObject> sortedList;
+    CommonFunctions commonFunctions;
 
     public WorkshopModelAdapter(Context context, JSONArray array) {
         this.context = context;
         this.array = array;
         this.requestQueue = MySingleton.getInstance(context).getRequestQueue();
         sortArray();
+        this.commonFunctions = new CommonFunctions();
     }
 
     @NonNull
@@ -55,10 +58,12 @@ public class WorkshopModelAdapter extends RecyclerView.Adapter<WorkshopModelAdap
         View view = LayoutInflater.from(context).inflate(R.layout.modelforcardui, parent, false);
         return new ViewHolder(view);
     }
+
     public void updateData(JSONArray newData) {
         this.array = newData;
         notifyDataSetChanged();
     }
+
     private void sortArray() {
         sortedList = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
@@ -101,9 +106,9 @@ public class WorkshopModelAdapter extends RecyclerView.Adapter<WorkshopModelAdap
 
         holder.clickAble.setOnClickListener(v -> {
             if (!isPaid) {
-                showDialogWithPrice();
+                commonFunctions.showDialogWithPrice(context);
             } else {
-               changeFragment(obj.optString("companyName"),obj.optString("name"));
+                changeFragment(obj.optString("companyName"), obj.optString("name"));
             }
         });
     }
@@ -113,35 +118,8 @@ public class WorkshopModelAdapter extends RecyclerView.Adapter<WorkshopModelAdap
         return sortedList == null ? 0 : sortedList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView logoImage,lockIcon;
-        TextView logo_Name;
-        CardView clickAble;
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            logoImage = itemView.findViewById(R.id.logoCompany);
-            logo_Name = itemView.findViewById(R.id.CompanyName);
-            clickAble = itemView.findViewById(R.id.cardOkModel);
-            lockIcon = itemView.findViewById(R.id.lockIcon);
-        }
-    }
-    private void showDialogWithPrice(){
-        Url url= new Url();
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getPrice(), null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                SubscriptionDialog.show(context,jsonObject);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
 
-            }
-        });
-        requestQueue.add(request);
-    }
-
-    private void changeFragment(String companyName,String modelName) {
+    private void changeFragment(String companyName, String modelName) {
         WorkshopTopicsFragment workshopTopicsFragment = new WorkshopTopicsFragment();
         Bundle bundle = new Bundle();
         bundle.putString("companyName", companyName);
@@ -151,5 +129,19 @@ public class WorkshopModelAdapter extends RecyclerView.Adapter<WorkshopModelAdap
         transaction.replace(R.id.frameLayoutInMain, workshopTopicsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView logoImage, lockIcon;
+        TextView logo_Name;
+        CardView clickAble;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            logoImage = itemView.findViewById(R.id.logoCompany);
+            logo_Name = itemView.findViewById(R.id.CompanyName);
+            clickAble = itemView.findViewById(R.id.cardOkModel);
+            lockIcon = itemView.findViewById(R.id.lockIcon);
+        }
     }
 }

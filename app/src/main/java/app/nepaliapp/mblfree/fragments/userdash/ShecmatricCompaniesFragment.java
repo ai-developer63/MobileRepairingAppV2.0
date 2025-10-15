@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.FrameLayout;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
@@ -43,6 +44,8 @@ public class ShecmatricCompaniesFragment extends Fragment {
     StorageClass storageClass;
     EditText searchText;
     JSONArray jsonArrayData;
+    CommonFunctions commonFunctions;
+    FrameLayout loadingOverlay;
 
     public ShecmatricCompaniesFragment() {
         // Required empty public constructor
@@ -73,10 +76,14 @@ public class ShecmatricCompaniesFragment extends Fragment {
 
     private void init(View view) {
         recyclerView = view.findViewById(R.id.copanies);
+        searchText = view.findViewById(R.id.searchEditText);
+        loadingOverlay = view.findViewById(R.id.loadingOverlay);
+
+        //Initialization
         url = new Url();
         requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
         storageClass = new StorageClass(requireContext());
-        searchText = view.findViewById(R.id.searchEditText);
+        commonFunctions = new CommonFunctions();
     }
 
 
@@ -90,6 +97,7 @@ public class ShecmatricCompaniesFragment extends Fragment {
                 }
                 recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
                 recyclerView.setAdapter(new SchematricDiagramCompanies(requireContext(), jsonObject.optJSONArray("Schematric")));
+                loadingOverlay.setVisibility(View.GONE);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -97,7 +105,8 @@ public class ShecmatricCompaniesFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                Toast.makeText(requireContext(), "connecting to server", Toast.LENGTH_SHORT).show();
+                commonFunctions.handleErrorResponse(requireContext(), volleyError);
+                loadingOverlay.setVisibility(View.GONE);
             }
         }) {
             @Override

@@ -2,6 +2,7 @@ package app.nepaliapp.mblfree.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class StorageClass {
     private static final String USER_DETAILS = "j";
@@ -12,6 +13,17 @@ public class StorageClass {
         this.context = context;
     }
 
+    public void UpdateUserCountry(String country){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_DETAILS,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("country", country);
+        editor.apply();
+    }
+
+    public String getUserCountry(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(USER_DETAILS,Context.MODE_PRIVATE);
+        return sharedPreferences.getString("country","unknown");
+    }
     public void userUpdateDecision(String decision) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USER_CHOICE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

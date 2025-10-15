@@ -1,10 +1,9 @@
 package app.nepaliapp.mblfree.fragmentmanager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -25,6 +24,8 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.StorageClass;
+import app.nepaliapp.mblfree.fragments.course.CourseSubTopicFragment;
+import app.nepaliapp.mblfree.fragments.course.CoursefirstFragment;
 import app.nepaliapp.mblfree.fragments.userdash.HomeFragment;
 import app.nepaliapp.mblfree.fragments.userdash.PracticalFragment;
 import app.nepaliapp.mblfree.fragments.userdash.ShecmatricCompaniesFragment;
@@ -32,8 +33,6 @@ import app.nepaliapp.mblfree.fragments.userdash.VideosFragment;
 
 public class DashBoardManager extends AppCompatActivity {
 
-    TextView textView;
-    StorageClass storageClass;
     BottomNavigationView btmNavigation;
     FrameLayout frameLayout;
     ConstraintLayout mainLayout;
@@ -50,23 +49,36 @@ public class DashBoardManager extends AppCompatActivity {
             return insets;
         });
 
-        replaceFragments(new HomeFragment());
+        Intent intent = getIntent();
+        String which = null;
+
+        if (intent != null) {
+            which = intent.getStringExtra("openThisFragment");
+        }
+
+        if ("CourseFirstFragment".equalsIgnoreCase(which)) {
+            replaceFragments(new CoursefirstFragment());
+        } else if ("CourseSubTopicFragment".equalsIgnoreCase(which)) {
+            replaceFragments(new CourseSubTopicFragment());
+        } else {
+            replaceFragments(new HomeFragment()); // default fragment
+        }
+
+
         setupBottomNavigation();
 
-//        logout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(DashBoardManager.this, SigninManager.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(intent);
-//                storageClass.UpdateJwtToken("Jwt_kali_xa");
-//                finish();
-//            }
-//        });
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                    showExitAlertDialog();
+                Fragment currentFragment = getSupportFragmentManager()
+                        .findFragmentById(R.id.frameLayoutInMain);
+
+                if (currentFragment instanceof CoursefirstFragment){
+                    replaceFragments(new HomeFragment());
+                } else if ((currentFragment instanceof CourseSubTopicFragment)) {
+                    replaceFragments(new CoursefirstFragment());
+                }
+
             }
         };
         getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
@@ -79,6 +91,7 @@ public class DashBoardManager extends AppCompatActivity {
         mainLayout = findViewById(R.id.main);
 
     }
+
     private void setupBottomNavigation() {
         btmNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -109,26 +122,25 @@ public class DashBoardManager extends AppCompatActivity {
     public void replaceFragments(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        // 🌟 Add custom animations for smooth transitions
+        fragmentTransaction.setCustomAnimations(
+                R.anim.fade_in_fast,
+                R.anim.fade_out_fast,
+                R.anim.fade_in_fast,
+                R.anim.fade_out_fast
+        );
+
         fragmentTransaction.replace(R.id.frameLayoutInMain, fragment);
         fragmentTransaction.commit();
     }
-    private void showExitAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Exit App");
-        builder.setMessage("Are you sure you want to exit the app?");
-        builder.setPositiveButton("Yes", (dialog, which) -> close());
-        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-        builder.show();
-    }
-    private void close() {
-        finishAffinity();
-        System.exit(0);
-    }
+
+
+
     public void navigateTo(Fragment fragment, int navItemId) {
         replaceFragments(fragment);
         btmNavigation.setSelectedItemId(navItemId);
     }
-
 
 
 }

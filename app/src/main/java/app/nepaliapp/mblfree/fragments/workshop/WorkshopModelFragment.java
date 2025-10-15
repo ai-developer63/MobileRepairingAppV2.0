@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
@@ -50,7 +52,8 @@ public class WorkshopModelFragment extends Fragment {
     JSONArray jsonArrayData;
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
-
+    CommonFunctions commonFunctions;
+    FrameLayout loadingOverlay;
     public WorkshopModelFragment() {
         // Required empty public constructor
     }
@@ -88,9 +91,24 @@ public class WorkshopModelFragment extends Fragment {
         requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
         storageClass = new StorageClass(requireContext());
         url = new Url();
+        commonFunctions = new CommonFunctions();
         //findbyID
         recyclerView = view.findViewById(R.id.workShopModels);
         searchText = view.findViewById(R.id.searchEditText);
+        loadingOverlay = view.findViewById(R.id.loadingOverlay);
+    }
+
+    private JSONArray reversePassedArray(JSONArray array) {
+        JSONArray reversedArray = new JSONArray();
+
+        for (int i = array.length() - 1; i >= 0; i--) {
+            try {
+                reversedArray.put(array.getJSONObject(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return reversedArray;
     }
 
     private void modelRequest(String company) {
@@ -98,14 +116,15 @@ public class WorkshopModelFragment extends Fragment {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getRequestWorkShopModel(company), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-
-                jsonArrayData = jsonObject.optJSONArray("models");
                 if (!isAdded()) {
                     return;
                 }
-                adapter = new WorkshopModelAdapter(requireContext(), jsonArrayData);
+                jsonArrayData = jsonObject.optJSONArray("models");
+
+                adapter = new WorkshopModelAdapter(requireContext(), reversePassedArray(jsonArrayData));
                 recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
                 recyclerView.setAdapter(adapter);
+                loadingOverlay.setVisibility(View.GONE);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -113,8 +132,8 @@ public class WorkshopModelFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                Log.d("workshop copanyError", volleyError.toString());
-                Toast.makeText(requireContext(), "connecting to server", Toast.LENGTH_SHORT).show();
+                commonFunctions.handleErrorResponse(requireContext(),volleyError);
+                loadingOverlay.setVisibility(View.GONE);
             }
         }) {
             @Override

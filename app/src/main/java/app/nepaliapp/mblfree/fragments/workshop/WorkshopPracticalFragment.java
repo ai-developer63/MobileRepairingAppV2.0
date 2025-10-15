@@ -2,12 +2,10 @@ package app.nepaliapp.mblfree.fragments.workshop;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.OptIn;
@@ -38,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.CustomHttpDataSourceFactory;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
@@ -50,9 +49,10 @@ public class WorkshopPracticalFragment extends Fragment {
     PlayerView playerView;
     StorageClass storageClass;
     Url url;
+    TextView topicText;
+    CommonFunctions commonFunctions;
     private boolean isFullScreen = false;
     private ExoPlayer player;
-    TextView topicText;
 
     public WorkshopPracticalFragment() {
         // Required empty public constructor
@@ -73,7 +73,7 @@ public class WorkshopPracticalFragment extends Fragment {
             OnBackPressedCallback callback = new OnBackPressedCallback(true) {
                 @Override
                 public void handleOnBackPressed() {
-                    changeFragment(companyName,modelName);
+                    changeFragment(companyName, modelName);
                 }
             };
 
@@ -90,7 +90,7 @@ public class WorkshopPracticalFragment extends Fragment {
         requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
         url = new Url();
         storageClass = new StorageClass(requireContext());
-
+        commonFunctions = new CommonFunctions();
         //find by ids
         recyclerView = view.findViewById(R.id.recyclerviewForPractical);
         playerView = view.findViewById(R.id.practicalVideoPlayer);
@@ -106,7 +106,7 @@ public class WorkshopPracticalFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                topicText.setText(jsonObject.optString("topicName")+ " of " + jsonObject.optString("ModelName"));
+                topicText.setText(jsonObject.optString("topicName") + " of " + jsonObject.optString("ModelName"));
                 String videoUrl = jsonObject.optString("videoLink");
                 initializePlayer(videoUrl);
                 JSONArray array = jsonObject.optJSONArray("steps");
@@ -118,7 +118,7 @@ public class WorkshopPracticalFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 if (!isAdded()) return;
-                Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                commonFunctions.handleErrorResponse(requireContext(), volleyError);
             }
         }) {
             @Override
@@ -198,7 +198,8 @@ public class WorkshopPracticalFragment extends Fragment {
             player = null;
         }
     }
-    private void changeFragment(String companyName,String modelName) {
+
+    private void changeFragment(String companyName, String modelName) {
         WorkshopTopicsFragment workshopTopicsFragment = new WorkshopTopicsFragment();
         Bundle bundle = new Bundle();
         bundle.putString("companyName", companyName);

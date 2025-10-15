@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.SubscriptionDialog;
 import app.nepaliapp.mblfree.common.Url;
@@ -35,12 +36,13 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
     Context context;
     JSONArray array;
     RequestQueue requestQueue;
-
+    CommonFunctions commonFunctions;
 
     public SchematricModelAdapter(Context context, JSONArray array) {
         this.context = context;
         this.array = array;
         this.requestQueue = MySingleton.getInstance(context).getRequestQueue();
+        this.commonFunctions = new CommonFunctions();
     }
 
     public void updateData(JSONArray newData) {
@@ -58,38 +60,37 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-            try {
-                JSONObject obj = array.getJSONObject(position);
-                holder.logo_Name.setText(obj.optString("name"));
-                Glide.with(holder.logoImage.getContext())
-                        .load(obj.optString("logo"))
-                        .error(R.mipmap.ic_launcher)
-                        .into(holder.logoImage);
-                boolean isPaid = obj.optBoolean("paid", false);
-                if (!isPaid) {
-                    holder.lockIcon.setVisibility(View.VISIBLE);
-                    holder.itemView.setAlpha(0.7f); // optional dim effect
-                } else {
-                    holder.lockIcon.setVisibility(View.GONE);
-                    holder.itemView.setAlpha(1f);
-                }
-
-                holder.clickAble.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (isPaid){
-                            openPdfViewerFragment(obj.optString("pdfLink"),obj.optString("companyName"));
-                        }else{
-                          showDialogWithPrice();
-                        }
-
-                    }
-                });
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
+        try {
+            JSONObject obj = array.getJSONObject(position);
+            holder.logo_Name.setText(obj.optString("name"));
+            Glide.with(holder.logoImage.getContext())
+                    .load(obj.optString("logo"))
+                    .error(R.mipmap.ic_launcher)
+                    .into(holder.logoImage);
+            boolean isPaid = obj.optBoolean("paid", false);
+            if (!isPaid) {
+                holder.lockIcon.setVisibility(View.VISIBLE);
+                holder.itemView.setAlpha(0.7f); // optional dim effect
+            } else {
+                holder.lockIcon.setVisibility(View.GONE);
+                holder.itemView.setAlpha(1f);
             }
-        }
 
+            holder.clickAble.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isPaid) {
+                        openPdfViewerFragment(obj.optString("pdfLink"), obj.optString("companyName"));
+                    } else {
+                        commonFunctions.showDialogWithPrice(context);
+                    }
+
+                }
+            });
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     @Override
@@ -97,7 +98,7 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
         return array.length();
     }
 
-    private void openPdfViewerFragment(String pdfUrl,String companyName) {
+    private void openPdfViewerFragment(String pdfUrl, String companyName) {
         PdfViewFragment pdfViewFragmet = new PdfViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString("pdf_url", pdfUrl);
@@ -110,7 +111,7 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView logoImage,lockIcon;
+        ImageView logoImage, lockIcon;
         TextView logo_Name;
         CardView clickAble;
 
@@ -121,21 +122,5 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
             clickAble = itemView.findViewById(R.id.cardOkModel);
             lockIcon = itemView.findViewById(R.id.lockIcon);
         }
-    }
-
-    private void showDialogWithPrice(){
-        Url url= new Url();
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getPrice(), null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                SubscriptionDialog.show(context,jsonObject);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        });
-        requestQueue.add(request);
     }
 }

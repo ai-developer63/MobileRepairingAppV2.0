@@ -1,8 +1,5 @@
 package app.nepaliapp.mblfree.common;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 public class Url {
 
@@ -10,6 +7,7 @@ public class Url {
     String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
 //    String officialUrl = "https://pmbl.subhakhar.xyz/";
     String app_checkup = "appcheck";
+    String updateCountry = "api/getCountry";
     String login = "api/auth/login";
     String signup = "api/auth/signup";
     String otpRequest = "api/auth/otpRequest";
@@ -26,6 +24,34 @@ public class Url {
     String requestWorkShopModel = "api/topics/subcompany/";
     String requestWorkShopTopic = "api/getAlltopics";
     String requestWorkShopSteps = "api/getSteps";
+    //Profile Part
+    String requestProfile = "api/getProfile";
+
+
+    //Now Courses
+    String FirstTopicsCourses = "api/courses/mainsetting";
+    String SecondTopicsCourses = "api/courses/subcard/";
+    String RequestCourse = "api/course/";
+
+    public String getRequestCourse(String courseHeading) {
+        return officialUrl+RequestCourse+courseHeading;
+    }
+
+    public String getSecondTopicsCourses(String mainTopicName) {
+        return officialUrl+SecondTopicsCourses+mainTopicName;
+    }
+
+    public String getFirstTopicsCourses() {
+        return officialUrl+FirstTopicsCourses;
+    }
+
+    public String getUpdateCountry() {
+        return officialUrl+updateCountry;
+    }
+
+    public String getRequestProfile() {
+        return officialUrl+requestProfile;
+    }
 
     public String getRequestWorkShopSteps() {
         return officialUrl+requestWorkShopSteps;

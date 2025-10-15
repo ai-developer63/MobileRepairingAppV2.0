@@ -37,12 +37,14 @@ import java.util.List;
 import java.util.Map;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
 import app.nepaliapp.mblfree.fragmentmanager.DashBoardManager;
 import app.nepaliapp.mblfree.recyclerAdapter.CategoriesAdapter;
-import app.nepaliapp.mblfree.recyclerAdapter.HomeVideoCardAdapter;
+import app.nepaliapp.mblfree.recyclerAdapter.FragmentVideoCardAdapter;
+import app.nepaliapp.mblfree.recyclerAdapter.VideoCardAdapter;
 
 public class HomeFragment extends Fragment {
     ImageCarousel carousel;
@@ -52,6 +54,7 @@ public class HomeFragment extends Fragment {
     StorageClass storageClass;
     FrameLayout loadingOverlay;
     ShapeableImageView profileImage;
+    CommonFunctions commonFunctions;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -83,7 +86,7 @@ public class HomeFragment extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-
+                showExitAlertDialog(requireContext());
             }
         };
 
@@ -92,6 +95,18 @@ public class HomeFragment extends Fragment {
                 callback
         );
         return view;
+    }
+    private void init(View view) {
+        carousel = view.findViewById(R.id.carousel);
+        categoriesRecycler = view.findViewById(R.id.categories);
+        loadingOverlay = view.findViewById(R.id.loadingOverlay);
+        videoRecyclerView = view.findViewById(R.id.homeVideoRecycler);
+        profileImage = view.findViewById(R.id.logoImage);
+        //initialization
+        url = new Url();
+        requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
+        storageClass = new StorageClass(requireContext());
+        commonFunctions = new CommonFunctions();
     }
 
 
@@ -103,7 +118,7 @@ public class HomeFragment extends Fragment {
                     return;
                 }
                 JSONArray array = jsonObject.optJSONArray("videos");
-                HomeVideoCardAdapter adapter = new HomeVideoCardAdapter(requireContext(),array);
+                FragmentVideoCardAdapter adapter = new FragmentVideoCardAdapter(requireContext(),array);
                 videoRecyclerView.setAdapter(adapter);
             }
         }, new Response.ErrorListener() {
@@ -111,7 +126,8 @@ public class HomeFragment extends Fragment {
             public void onErrorResponse(VolleyError volleyError) {
                 if (!isAdded()){
                     return;
-                }
+                }commonFunctions.handleErrorResponse(requireContext(),volleyError);
+
             }
         }) {
             @Override
@@ -147,7 +163,12 @@ public class HomeFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+
+                if (!isAdded()){
+                    return;
+                }
                 loadingOverlay.setVisibility(View.GONE);
+                commonFunctions.handleErrorResponse(requireContext(),volleyError);
             }
         }) {
             @Override
@@ -181,13 +202,15 @@ public class HomeFragment extends Fragment {
                 } catch (JSONException e) {
                     loadingOverlay.setVisibility(View.GONE);
                     Toast.makeText(requireContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                }
-
+                };
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-
+                if (!isAdded()){
+                    return;
+                }
+                commonFunctions.handleErrorResponse(requireContext(),volleyError);
             }
         }) {
             @Override
@@ -201,17 +224,7 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void init(View view) {
-        carousel = view.findViewById(R.id.carousel);
-        categoriesRecycler = view.findViewById(R.id.categories);
-        loadingOverlay = view.findViewById(R.id.loadingOverlay);
-        videoRecyclerView = view.findViewById(R.id.homeVideoRecycler);
-        profileImage = view.findViewById(R.id.logoImage);
-        //initialization
-        url = new Url();
-        requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
-        storageClass = new StorageClass(requireContext());
-    }
+
 
     private void showExitAlertDialog(Context context) {
 

@@ -1,12 +1,10 @@
 package app.nepaliapp.mblfree.fragments.workshop;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
@@ -29,11 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
-import app.nepaliapp.mblfree.fragmentmanager.DashBoardManager;
-import app.nepaliapp.mblfree.fragments.userdash.PracticalFragment;
 import app.nepaliapp.mblfree.recyclerAdapter.WorkshopTopicAdapter;
 
 public class WorkshopTopicsFragment extends Fragment {
@@ -44,6 +41,7 @@ public class WorkshopTopicsFragment extends Fragment {
     JSONArray jsonArrayData;
     WorkshopTopicAdapter adapter;
     TextView ModelName;
+    CommonFunctions commonFunctions;
 
     public WorkshopTopicsFragment() {
         // Required empty public constructor
@@ -59,19 +57,19 @@ public class WorkshopTopicsFragment extends Fragment {
             String companyName = getArguments().getString("companyName");
             String modelName = getArguments().getString("modelName");
             ModelName.setText(modelName);
-            TopicRequest(companyName,modelName);
+            TopicRequest(companyName, modelName);
 
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                changeFragment(companyName,modelName);
-            }
-        };
+            OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                @Override
+                public void handleOnBackPressed() {
+                    changeFragment(companyName, modelName);
+                }
+            };
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(
-                getViewLifecycleOwner(),
-                callback
-        );
+            requireActivity().getOnBackPressedDispatcher().addCallback(
+                    getViewLifecycleOwner(),
+                    callback
+            );
         }
         return view;
     }
@@ -80,13 +78,13 @@ public class WorkshopTopicsFragment extends Fragment {
         requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
         storageClass = new StorageClass(requireContext());
         url = new Url();
-
+        commonFunctions = new CommonFunctions();
         //findByID
         recyclerView = view.findViewById(R.id.topics);
         ModelName = view.findViewById(R.id.ModelName);
     }
 
-    private void TopicRequest(String company,String model) {
+    private void TopicRequest(String company, String model) {
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url.getRequestWorkShopTopic(), makeObject(company, model), new Response.Listener<JSONObject>() {
             @Override
@@ -106,8 +104,7 @@ public class WorkshopTopicsFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                Log.d("workshop copanyError", volleyError.toString());
-                Toast.makeText(requireContext(), "connecting to server", Toast.LENGTH_SHORT).show();
+                commonFunctions.handleErrorResponse(requireContext(), volleyError);
             }
         }) {
             @Override
@@ -121,7 +118,7 @@ public class WorkshopTopicsFragment extends Fragment {
 
     }
 
-    private JSONObject makeObject (String company,String model){
+    private JSONObject makeObject(String company, String model) {
         JSONObject obj = new JSONObject();
         try {
             obj.put("company", company);
@@ -132,7 +129,8 @@ public class WorkshopTopicsFragment extends Fragment {
         return obj;
 
     }
-    private void changeFragment(String companyName,String modelName) {
+
+    private void changeFragment(String companyName, String modelName) {
         WorkshopModelFragment workshopModelFragment = new WorkshopModelFragment();
         Bundle bundle = new Bundle();
         bundle.putString("companyName", companyName);

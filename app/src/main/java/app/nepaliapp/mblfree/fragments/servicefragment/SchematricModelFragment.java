@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
@@ -38,7 +40,6 @@ import app.nepaliapp.mblfree.fragments.userdash.HomeFragment;
 import app.nepaliapp.mblfree.fragments.userdash.PracticalFragment;
 import app.nepaliapp.mblfree.fragments.userdash.ShecmatricCompaniesFragment;
 import app.nepaliapp.mblfree.fragments.userdash.VideosFragment;
-import app.nepaliapp.mblfree.recyclerAdapter.SchematricDiagramCompanies;
 import app.nepaliapp.mblfree.recyclerAdapter.SchematricModelAdapter;
 
 public class SchematricModelFragment extends Fragment {
@@ -49,9 +50,11 @@ public class SchematricModelFragment extends Fragment {
     StorageClass storageClass;
     EditText searchText;
     JSONArray jsonArrayData;
+    SchematricModelAdapter adapter;
+    FrameLayout loadingOverlay;
+    CommonFunctions commonFunctions;
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
-    SchematricModelAdapter adapter;
 
     public SchematricModelFragment() {
 
@@ -90,11 +93,12 @@ public class SchematricModelFragment extends Fragment {
         //find by id
         recyclerView = view.findViewById(R.id.models);
         searchText = view.findViewById(R.id.searchEditText);
-
+        loadingOverlay = view.findViewById(R.id.loadingOverlay);
         //Urls
         url = new Url();
         requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
         storageClass = new StorageClass(requireContext());
+        commonFunctions = new CommonFunctions();
     }
 
 
@@ -104,14 +108,16 @@ public class SchematricModelFragment extends Fragment {
             @Override
             public void onResponse(JSONArray jsonArray) {
                 jsonArrayData = jsonArray;
-                 adapter = new SchematricModelAdapter(requireContext(), jsonArray);
+                adapter = new SchematricModelAdapter(requireContext(), reversePassedArray(jsonArray));
                 recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
                 recyclerView.setAdapter(adapter);
+                loadingOverlay.setVisibility(View.GONE);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-
+                commonFunctions.handleErrorResponse(requireContext(), volleyError);
+                loadingOverlay.setVisibility(View.GONE);
             }
         }) {
             @Override
@@ -132,6 +138,19 @@ public class SchematricModelFragment extends Fragment {
             ((DashBoardManager) getActivity()).replaceFragments(fragment);
         }
 
+    }
+
+    private JSONArray reversePassedArray(JSONArray array) {
+        JSONArray reversedArray = new JSONArray();
+
+        for (int i = array.length() - 1; i >= 0; i--) {
+            try {
+                reversedArray.put(array.getJSONObject(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return reversedArray;
     }
 
     private void updateNav(String whichSelect) {
@@ -163,10 +182,16 @@ public class SchematricModelFragment extends Fragment {
 
         ((DashBoardManager) requireActivity()).navigateTo(fragment, menuId);
     }
+
     private void setupTextWatcher() {
         searchText.addTextChangedListener(new TextWatcher() {
-            @Override public void afterTextChanged(Editable s) {}
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -193,6 +218,7 @@ public class SchematricModelFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
     private JSONArray findMatchingObjects(String searchText, JSONArray originalJsonArray) throws JSONException {
         JSONArray matchingArray = new JSONArray();
 

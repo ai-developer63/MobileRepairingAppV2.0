@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/alert_dialog_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Close Button -->
+    <ImageView
+        android:id="@+id/closeicon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="end"
+        android:src="@drawable/close_icon"
+        android:contentDescription="Close" />
+
+    <!-- Help / Video Section at Top -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="12dp">
+
+        <TextView
+            android:id="@+id/text_help_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How to get Coupon Code?"
+            android:textSize="16sp"
+            android:textColor="#222222"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/icon_help_video"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/video"
+            android:contentDescription="Watch Tutorial"
+            android:clickable="true"
+            android:focusable="true"
+            app:tint="@android:color/holo_red_dark" />
+
+        <TextView
+            android:id="@+id/text_help_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tap the icon to watch a video tutorial"
+            android:textSize="13sp"
+            android:textColor="#666666"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+    <!-- Coupon Input -->
+    <EditText
+        android:id="@+id/edittext_coupon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your coupon code"
+        android:padding="12dp"
+        android:background="@drawable/edittextdesign"
+        android:textColor="#222222"
+        android:textColorHint="#888888"
+        android:layout_marginTop="16dp" />
+
+    <!-- Redeem Button -->
+    <Button
+        android:id="@+id/button_redeem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Redeem"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#1565C0"
+        android:textColor="#FFFFFF" />
+
+    <!-- Request Coupon Button -->
+    <Button
+        android:id="@+id/button_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Request Coupon Code"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#2196F3"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout>

@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <!-- ========================================================= -->
     <!-- 1. FIXED PROFILE HEADER AND STATUS AREA -->
@@ -50,7 +49,7 @@
                 android:id="@+id/tvHelloUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Namaste, Subash"
+                tools:text="Namaste, Subash"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/primaryText"/>
@@ -60,7 +59,16 @@
                 android:id="@+id/tvWelcome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mobile repairing मा स्वागत छ"
+                tools:text="Mobile repairing मा स्वागत छ"
+                android:textSize="14sp"
+                android:textColor="@color/secondaryText"
+                android:layout_marginTop="2dp"/>
+            <!-- Welcome text in Nepali -->
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Mobile repairing मा स्वागत छ"
                 android:textSize="14sp"
                 android:textColor="@color/secondaryText"
                 android:layout_marginTop="2dp"/>
@@ -70,7 +78,7 @@
                 android:id="@+id/tvCountry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nepal"
+                tools:text="Nepal"
                 android:textSize="14sp"
                 android:textColor="@color/subtleAccent"
                 android:drawablePadding="4dp"
@@ -100,7 +108,7 @@
                     android:id="@+id/tvAccountType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Free Account"
+                    tools:text="Free Account"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/white"/>
@@ -110,7 +118,7 @@
                     android:id="@+id/tvSubscription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Remaining Days: 15"
+                    tools:text="Remaining Days: 15"
                     android:textSize="14sp"
                     android:textColor="@color/white"
                     android:layout_marginTop="4dp"
@@ -128,7 +136,9 @@
                     app:cornerRadius="8dp"
                     android:textStyle="bold"
                     android:layout_marginTop="12dp"
-                    android:paddingVertical="12dp"/>
+                    android:paddingVertical="12dp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:visibility="gone"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -291,7 +301,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="Request Services"
+                            android:text="Request Feature"
                             android:textColor="@color/primaryText"
                             android:textSize="17sp"
                             android:layout_marginStart="16dp"/>
@@ -361,4 +371,23 @@
 
         </LinearLayout>
     </ScrollView>
+    <!-- Loading Overlay -->
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AE000000"
+        android:visibility="visible"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Centered Spinner -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:layout_gravity="center" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

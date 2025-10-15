@@ -24,6 +24,7 @@ public class PageFragment extends Fragment {
     private int pageIndex;
     private float renderScale;
     private ViewPager2 viewPager;
+    private Bitmap pageBitmap;
 
     public static PageFragment newInstance(int pageIndex, PdfRenderer pdfRenderer, ViewPager2 viewPager, float scale) {
         PageFragment fragment = new PageFragment();
@@ -55,21 +56,33 @@ public class PageFragment extends Fragment {
         photoView.setMaximumScale(5f);
         photoView.setScale(1f, false);
 
-        // Render PDF page
+
+        // Render PDF page safely
         try {
             PdfRenderer.Page page = pdfRenderer.openPage(pageIndex);
-            Bitmap bitmap = Bitmap.createBitmap(
-                    (int)(page.getWidth() * renderScale),
-                    (int)(page.getHeight() * renderScale),
+
+            int pageWidth = page.getWidth();
+            int pageHeight = page.getHeight();
+
+            // calculate safe scale
+            float maxPixels = 5_000_000f; // ~5 MP safe
+            float currentPixels = pageWidth * pageHeight;
+            float safeScale = (float) Math.sqrt(maxPixels / currentPixels);
+            safeScale = Math.min(safeScale, 1.0f); // don't upscale
+
+            pageBitmap = Bitmap.createBitmap(
+                    (int)(pageWidth * safeScale),
+                    (int)(pageHeight * safeScale),
                     Bitmap.Config.ARGB_8888
             );
-            page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+
+            page.render(pageBitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
             page.close();
-            photoView.setImageBitmap(bitmap);
+            photoView.setImageBitmap(pageBitmap);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         // Disable ViewPager swipe when zoomed
         photoView.setOnScaleChangeListener((scaleFactor, focusX, focusY) -> {
             viewPager.setUserInputEnabled(photoView.getScale() <= photoView.getMinimumScale());
@@ -96,5 +109,13 @@ public class PageFragment extends Fragment {
         });
 
         return photoView;
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (pageBitmap != null && !pageBitmap.isRecycled()) {
+            pageBitmap.recycle();
+            pageBitmap = null;
+        }
     }
 }

@@ -1,15 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.servicefragment.ShopFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="welcome to Shop Fragment"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="25sp"/>
-</RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/fragment_shop_coming_soon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="48dp">
+
+            <ImageView
+                android:id="@+id/shop_logo"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@mipmap/ic_launcher"
+                android:contentDescription="@string/app_name"
+                android:layout_marginBottom="40dp"/>
+
+            <TextView
+                android:id="@+id/coming_soon_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="!! Shop Coming Soon !!"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorAccentDemo"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/coming_soon_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/coming_soon_shop_description"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="40dp" />
+
+            <Button
+                android:id="@+id/notify_me_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notify Me When Live"
+                android:backgroundTint="@color/colorAccentDemo"
+                android:textColor="@color/white"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                tools:targetApi="lollipop"/>
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

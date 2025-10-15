@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.nepaliapp.mblfree.R;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
@@ -49,6 +51,8 @@ public class PracticalFragment extends Fragment {
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
     WorkshopCompanyAdapter adapter;
+    CommonFunctions commonFunctions;
+    FrameLayout loadingOverlay;
 
     public PracticalFragment() {
         // Required empty public constructor
@@ -82,9 +86,11 @@ public class PracticalFragment extends Fragment {
         requestQueue = MySingleton.getInstance(requireContext()).getRequestQueue();
         storageClass = new StorageClass(requireContext());
         url = new Url();
+        commonFunctions = new CommonFunctions();
         //findbyID
         recyclerView = view.findViewById(R.id.companies);
         searchText = view.findViewById(R.id.searchEditText);
+        loadingOverlay = view.findViewById(R.id.loadingOverlay);
     }
 
 
@@ -100,6 +106,7 @@ public class PracticalFragment extends Fragment {
                 adapter = new WorkshopCompanyAdapter(requireContext(), jsonArrayData);
                 recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
                 recyclerView.setAdapter(adapter);
+                loadingOverlay.setVisibility(View.GONE);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -107,8 +114,8 @@ public class PracticalFragment extends Fragment {
                 if (!isAdded()) {
                     return;
                 }
-                Log.d("workshop copanyError", volleyError.toString());
-                Toast.makeText(requireContext(), "connecting to server", Toast.LENGTH_SHORT).show();
+                commonFunctions.handleErrorResponse(requireContext(),volleyError);
+                loadingOverlay.setVisibility(View.GONE);
             }
         }) {
             @Override

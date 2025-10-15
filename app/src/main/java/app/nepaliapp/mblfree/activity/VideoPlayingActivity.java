@@ -25,97 +25,147 @@ import org.json.JSONObject;
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.CustomHttpDataSourceFactory;
 import app.nepaliapp.mblfree.common.StorageClass;
-import app.nepaliapp.mblfree.recyclerAdapter.HomeVideoCardAdapter;
+import app.nepaliapp.mblfree.recyclerAdapter.VideoCardAdapter;
 
 @UnstableApi
 public class VideoPlayingActivity extends AppCompatActivity {
-    RecyclerView otherVideoRecycler;
+
     private PlayerView playerView;
     private TextView videoTitle;
     private ExoPlayer player;
     private boolean isFullScreen = false;
+    private RecyclerView otherVideoRecycler;
+    private VideoCardAdapter adapter;
+    private JSONArray otherVideos = new JSONArray();
+    private String currentVideoUrl;
+    private JSONArray allVideos= new JSONArray();    // store all videos initially
 
     @UnstableApi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_playing);
-        otherVideoRecycler = findViewById(R.id.recyclerViewOtherVideos);
-        otherVideoRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        String jsonData = getIntent().getStringExtra("videoListJson");
-        if (jsonData != null) {
-            JSONArray videosArray = null;
-            try {
-                videosArray = new JSONArray(jsonData);
-                // Filter out currently playing video
-                JSONArray filteredArray = new JSONArray();
-                String currentVideoUrl = getIntent().getStringExtra("videoUrl");
-                for (int i = 0; i < videosArray.length(); i++) {
-                    JSONObject obj = videosArray.optJSONObject(i);
-                    if (!obj.optString("link").equals(currentVideoUrl)) {
-                        filteredArray.put(obj);
-                    }
-                }
-                // Pass filteredArray to RecyclerView adapter
-                HomeVideoCardAdapter adapter = new HomeVideoCardAdapter(this, filteredArray);
-                otherVideoRecycler.setAdapter(adapter);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
 
-
-
-
-        }
+        // Views
         playerView = findViewById(R.id.player_view);
         videoTitle = findViewById(R.id.titleOfTheVideo);
-        videoTitle.setText("Loading...");
+        otherVideoRecycler = findViewById(R.id.recyclerViewOtherVideos);
 
+        videoTitle.setText("Loading...");
         playerView.setControllerShowTimeoutMs(5000);
         playerView.setFullscreenButtonClickListener(isFull -> toggleFullScreen());
 
-        // Get video URL and title from intent
-        String videoUrl = getIntent().getStringExtra("videoUrl");
-        String title = getIntent().getStringExtra("videoTitle");
+        otherVideoRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        if (videoUrl != null) {
-            videoTitle.setText(title != null ? title : "Video");
-            initializePlayer(videoUrl);
+        // Get intent extras
+        String videoUrl = getIntent().getStringExtra("videoUrl");
+        String videoTitleStr = getIntent().getStringExtra("videoTitle");
+        currentVideoUrl = videoUrl;
+
+        if (videoTitleStr != null) videoTitle.setText(videoTitleStr);
+
+        // Initialize player with the main video
+        if (videoUrl != null) initializePlayer(videoUrl);
+
+        // Setup other videos
+        String jsonData = getIntent().getStringExtra("videoListJson");
+        if (jsonData != null) {
+            try {
+                allVideos = new JSONArray(jsonData); // assign to class field
+                otherVideos = new JSONArray();
+
+                // populate otherVideos with all except currently playing
+                for (int i = 0; i < allVideos.length(); i++) {
+                    JSONObject obj = allVideos.optJSONObject(i);
+                    if (!obj.optString("link").equals(currentVideoUrl)) {
+                        otherVideos.put(obj);
+                    }
+                }
+
+                setupRecyclerView();
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
-    // In your VideoPlayingActivity
+    private void setupRecyclerView() {
+        adapter = new VideoCardAdapter(this, otherVideos, video -> {
+            try {
+                // Get clicked video details
+                String newUrl = video.optString("link");
+                String newTitle = video.optString("title");
+
+                // Update player
+                videoTitle.setText(newTitle);
+                currentVideoUrl = newUrl;
+                playVideo(newUrl);
+
+                // Rebuild RecyclerView list after video change
+                rebuildOtherVideosList();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        // Initially populate RecyclerView with videos except currently playing
+        rebuildOtherVideosList();
+        otherVideoRecycler.setAdapter(adapter);
+    }
+
+    private void rebuildOtherVideosList() {
+        try {
+            JSONArray updatedList = new JSONArray();
+            for (int i = 0; i < allVideos.length(); i++) {
+                JSONObject obj = allVideos.getJSONObject(i);
+                // Exclude the currently playing video
+                if (!obj.optString("link").equals(currentVideoUrl)) {
+                    updatedList.put(obj);
+                }
+            }
+            otherVideos = updatedList;
+            if (adapter != null) {
+                adapter.updateData(updatedList);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @UnstableApi
     private void initializePlayer(String videoUrl) {
         if (player != null) player.release();
 
         StorageClass tokenStore = new StorageClass(getApplicationContext());
         String jwtToken = tokenStore.getJwtToken();
-
         HttpDataSource.Factory dataSourceFactory = new CustomHttpDataSourceFactory(jwtToken);
 
-        // Configure LoadControl
-        long minBufferMs = 3_000; // 5 seconds minimum
-        long maxBufferMs = 10_000; // 50 seconds maximum preload
-        long bufferForPlaybackMs = 1_500; // start playback after ~1.5s buffered
-        long bufferForPlaybackAfterRebufferMs = 2_000; // resume after stall
-
         DefaultLoadControl loadControl = new DefaultLoadControl.Builder()
-                .setBufferDurationsMs((int) minBufferMs,
-                        (int) maxBufferMs,
-                        (int) bufferForPlaybackMs,
-                        (int) bufferForPlaybackAfterRebufferMs)
+                .setBufferDurationsMs(
+                        3000,  // min buffer
+                        5000,  // max buffer
+                        1500,  // buffer to start playback
+                        2000   // buffer after rebuffer
+                )
                 .setPrioritizeTimeOverSizeThresholds(true)
                 .build();
 
         player = new ExoPlayer.Builder(this)
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory))
+
                 .setLoadControl(loadControl)
                 .build();
 
         playerView.setPlayer(player);
+        playVideo(videoUrl);
+    }
 
-        // Add video
+    private void playVideo(String videoUrl) {
+        if (player == null) return;
         MediaItem mediaItem = MediaItem.fromUri(videoUrl);
         player.setMediaItem(mediaItem);
         player.prepare();
@@ -123,39 +173,32 @@ public class VideoPlayingActivity extends AppCompatActivity {
     }
 
     private void toggleFullScreen() {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) playerView.getLayoutParams();
         if (isFullScreen) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             if (getSupportActionBar() != null) getSupportActionBar().show();
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) playerView.getLayoutParams();
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = (int) (200 * getResources().getDisplayMetrics().density);
-            playerView.setLayoutParams(params);
             isFullScreen = false;
         } else {
             getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-            );
+                    View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             if (getSupportActionBar() != null) getSupportActionBar().hide();
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) playerView.getLayoutParams();
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            playerView.setLayoutParams(params);
             isFullScreen = true;
         }
+        playerView.setLayoutParams(params);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (player != null) {
-            player.release();
-            player = null;
+            player.setPlayWhenReady(false);
+            player.pause();
         }
     }
 

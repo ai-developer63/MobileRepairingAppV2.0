@@ -21,6 +21,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.ServerError;
@@ -28,7 +29,12 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import app.nepaliapp.mblfree.activity.MaintainaceActivity;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
@@ -43,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     Button restartBtn;
     TextView sloganTxt;
     StorageClass storageClass;
-
+CommonFunctions commonFunctions;
     public static int compareVersion(String localVersion, String serverVersion) {
         if (localVersion == null || serverVersion == null) return 0;
 
@@ -74,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         findingById();
+        if (!storageClass.getJwtToken().equalsIgnoreCase("Jwt_kali_xa")){
+           UpdateCountry();
+        }
         restartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 storageClass.userUpdateDecision("later");
                             }
+
                         });
                     } else if (result == 0) {
                         //User has already updated
@@ -112,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
                     } else {
                         //It is developer or update issue
-                        Toast.makeText(MainActivity.this, "Hi Subash, How are you??", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Hi Subash, What's Today??", Toast.LENGTH_SHORT).show();
                         if (storageClass.getJwtToken().equalsIgnoreCase("Jwt_kali_xa")){
                             startActivity(new Intent(MainActivity.this,SigninManager.class));
                         }else {
@@ -163,7 +173,32 @@ public class MainActivity extends AppCompatActivity {
         storageClass = new StorageClass(getApplicationContext());
         requestQueue = MySingleton.getInstance(getApplicationContext()).getRequestQueue();
         url = new Url();
+        commonFunctions = new CommonFunctions();
     }
+
+    private void UpdateCountry(){
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getUpdateCountry(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+             storageClass.UpdateUserCountry(jsonObject.optString("country"));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                commonFunctions.handleErrorResponse(MainActivity.this,volleyError);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + storageClass.getJwtToken());
+                return headers;
+            }
+        };
+        requestQueue.add(request);
+    }
+
+
 
     private String getAppVersionName() {
         try {

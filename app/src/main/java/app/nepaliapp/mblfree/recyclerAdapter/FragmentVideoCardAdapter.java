@@ -7,10 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.cardview.widget.CardView;
+import androidx.media3.common.util.UnstableApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,11 +22,11 @@ import org.json.JSONObject;
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.activity.VideoPlayingActivity;
 
-public class HomeVideoCardAdapter extends RecyclerView.Adapter<HomeVideoCardAdapter.ViewHolder> {
+public class FragmentVideoCardAdapter extends RecyclerView.Adapter<FragmentVideoCardAdapter.ViewHolder> {
     Context context;
     JSONArray array;
 
-    public HomeVideoCardAdapter(Context context, JSONArray array) {
+    public FragmentVideoCardAdapter(Context context, JSONArray array) {
         this.context = context;
         this.array = array;
     }
@@ -48,6 +49,7 @@ public class HomeVideoCardAdapter extends RecyclerView.Adapter<HomeVideoCardAdap
                 .error(R.mipmap.ic_launcher)
                 .into(holder.thumnailView);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @OptIn(markerClass = UnstableApi.class)
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, VideoPlayingActivity.class);
@@ -65,7 +67,7 @@ public class HomeVideoCardAdapter extends RecyclerView.Adapter<HomeVideoCardAdap
         return array.length();
     }
 
-    public class ViewHolder extends  RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView thumnailView;
         TextView title, subTitle, author;
         CardView cardView;

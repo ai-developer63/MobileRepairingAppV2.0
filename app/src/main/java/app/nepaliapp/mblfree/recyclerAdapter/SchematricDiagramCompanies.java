@@ -24,18 +24,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import app.nepaliapp.mblfree.R;
-import app.nepaliapp.mblfree.common.Url;
 import app.nepaliapp.mblfree.fragments.servicefragment.SchematricModelFragment;
 
 public class SchematricDiagramCompanies extends RecyclerView.Adapter<SchematricDiagramCompanies.ViewHolder> {
     Context context;
     JSONArray array;
-    Url url;
 
     public SchematricDiagramCompanies(Context context, JSONArray array) {
         this.context = context;
         this.array = array;
-        url = new Url();
+
     }
     public void updateData(JSONArray newData) {
         this.array = newData;
