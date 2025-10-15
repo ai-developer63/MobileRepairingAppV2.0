@@ -59,22 +59,12 @@ public class PdfViewFragment extends Fragment {
 //        searchButton = view.findViewById(R.id.searchButton);
         pdfView = view.findViewById(R.id.pdfView);
 
-        // Button placeholders
-        goToPageButton.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Go to page feature coming soon", Toast.LENGTH_SHORT).show());
-
-        searchButton.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Search feature coming soon", Toast.LENGTH_SHORT).show());
-
-        // Back navigation
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                replaceWithCompany("SampleCompany");
-            }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
-
+//        // Button placeholders
+//        goToPageButton.setOnClickListener(v ->
+//                Toast.makeText(getContext(), "Go to page feature coming soon", Toast.LENGTH_SHORT).show());
+//
+//        searchButton.setOnClickListener(v ->
+//                Toast.makeText(getContext(), "Search feature coming soon", Toast.LENGTH_SHORT).show());
         Bundle bundle = getArguments();
         if (bundle != null) {
             String pdfUrl = bundle.getString("pdf_url");
@@ -82,6 +72,22 @@ public class PdfViewFragment extends Fragment {
                 downloadAndOpenPdf(pdfUrl);
             }
         }
+        // Back navigation
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (bundle != null) {
+                    String name = bundle.getString("name");
+                    if (name != null && !name.isEmpty()) {
+                        replaceWithCompany(name);
+                    }
+
+                }
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
+
 
         return view;
     }
@@ -178,6 +184,14 @@ public class PdfViewFragment extends Fragment {
         }
 
     }
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (pdfView != null) {
+            pdfView.recycle(); // stop background render thread
+            pdfView = null;
+        }
+        isFragmentAttached = false;
+    }
 
 }

@@ -70,7 +70,7 @@ public class CourseActivity extends AppCompatActivity {
             String courseData = intent.getStringExtra("courseData");
             String fromWhere = intent.getStringExtra("fromWhere");
             heading.setText(courseData);
-            getCourseContent(courseData);
+            getCourseContent(courseData, fromWhere);
 
             backBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -104,25 +104,35 @@ public class CourseActivity extends AppCompatActivity {
         url = new Url();
         requestQueue = MySingleton.getInstance(this).getRequestQueue();
         storageClass = new StorageClass(this);
+        commonFunctions  = new CommonFunctions();
 
     }
 
-    private void getCourseContent(String TopicName) {
+    private void getCourseContent(String TopicName, String fromWhere) {
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url.getRequestCourse(TopicName), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 Log.d("courseObject", jsonObject.toString());
-                array = jsonObject.optJSONArray("course");
-                courseRecycler.setLayoutManager(new LinearLayoutManager(CourseActivity.this));
-                courseAdapter = new CourseSetterAdapter(CourseActivity.this, jsonObject.optJSONArray("course"));
-                courseRecycler.setAdapter(courseAdapter);
 
-                loadingOverlay.setVisibility(View.GONE);
+                array = jsonObject.optJSONArray("course");
+                if (array!=null){
+                    courseRecycler.setLayoutManager(new LinearLayoutManager(CourseActivity.this));
+                    courseAdapter = new CourseSetterAdapter(CourseActivity.this, jsonObject.optJSONArray("course"));
+                    courseRecycler.setAdapter(courseAdapter);
+                    loadingOverlay.setVisibility(View.GONE);
+                }else {
+                    Intent intent1 = CourseActivity.this.getIntent(fromWhere, TopicName);
+                    startActivity(intent1);
+                    finish(); // optional: close current activity
+                }
+
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+
                 commonFunctions.handleErrorResponse(CourseActivity.this, volleyError);
                 loadingOverlay.setVisibility(View.GONE);
             }
@@ -136,6 +146,20 @@ public class CourseActivity extends AppCompatActivity {
         };
         requestQueue.add(objectRequest);
     }
+
+    @NonNull
+    private Intent getIntent(String fromWhere, String TopicName) {
+        Intent intent1 = new Intent(CourseActivity.this, DashBoardManager.class);
+        if ("main".equalsIgnoreCase(fromWhere)) {
+            intent1.putExtra("openThisFragment", "CourseFirstFragment");
+        } else {
+            intent1.putExtra("courseData", TopicName);
+            intent1.putExtra("openThisFragment", "CourseSubTopicFragment");
+        }
+        intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        return intent1;
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
