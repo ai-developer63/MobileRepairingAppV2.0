@@ -82,7 +82,7 @@ public class SchematricModelAdapter extends RecyclerView.Adapter<SchematricModel
                     if (isPaid) {
                         openPdfViewerFragment(obj.optString("pdfLink"), obj.optString("companyName"));
                     } else {
-                        commonFunctions.showDialogWithPrice(context);
+                        commonFunctions.showDialogWithPrice(context,"Schematric");
                     }
 
                 }

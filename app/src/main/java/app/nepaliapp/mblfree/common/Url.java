@@ -4,8 +4,8 @@ package app.nepaliapp.mblfree.common;
 public class Url {
 
     String gitUrl = "https://raw.githubusercontent.com/ai-developer63/just/gh-pages/";
-//    String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
-    String officialUrl = "https://pmbl.subhakhar.xyz/";
+    String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
+//    String officialUrl = "https://pmbl.subhakhar.xyz/";
     String app_checkup = "appcheck";
     String updateCountry = "api/getCountry";
     String login = "api/auth/login";
@@ -32,6 +32,20 @@ public class Url {
     String FirstTopicsCourses = "api/courses/mainsetting";
     String SecondTopicsCourses = "api/courses/subcard/";
     String RequestCourse = "api/course/";
+
+    // Request Purchase
+    String purchaseRequest= "api/requestPurchase";
+
+    //RedeemCoupon Code
+    String couponCode = "api/redeem";
+
+    public String getCouponCode() {
+        return officialUrl+couponCode;
+    }
+
+    public String getPurchaseRequest() {
+        return officialUrl+purchaseRequest;
+    }
 
     public String getRequestCourse(String courseHeading) {
         return officialUrl+RequestCourse+courseHeading;

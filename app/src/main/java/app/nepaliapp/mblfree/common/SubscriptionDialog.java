@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,15 +13,26 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import app.nepaliapp.mblfree.R;
 
 public class SubscriptionDialog {
 
 
-    public static void show(Context context, JSONObject jsonObject) {
+    public static void show(Context context, JSONObject jsonObject,String fromWhere) {
         final String[] messagetext = new String[1];
         // Create a builder
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -94,10 +106,24 @@ public class SubscriptionDialog {
 
         // Set click listener for the subscribe button
         buttonSubscribe.setOnClickListener(v -> {
-            String messengerLink = "https://m.me/106704358421953" + "?text=" + Uri.encode(messagetext[0]);
+            // 1️⃣ Update request API
+            updateRequest(context, spinnerSubscription.getSelectedItem().toString(), fromWhere);
+
+            // 2️⃣ Construct Messenger link
+            String messengerLink = "https://m.me/106704358421953?text=" + Uri.encode(messagetext[0]);
             Uri uri = Uri.parse(messengerLink);
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            context.startActivity(intent);
+
+            // 3️⃣ Modern safety check
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(intent); // Safe to launch
+            } else {
+                // Fallback to browser if Messenger app is not installed
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://m.me/106704358421953"));
+                context.startActivity(browserIntent);
+            }
+
+            // 4️⃣ Dismiss dialog
             dialog.dismiss();
         });
         closeBtn.setOnClickListener(new View.OnClickListener() {
@@ -106,5 +132,44 @@ public class SubscriptionDialog {
                 dialog.dismiss();
             }
         });
+    }
+
+
+    private static void updateRequest(Context context, String chooseOption, String fromWhere){
+        RequestQueue requestQueue = MySingleton.getInstance(context).getRequestQueue();
+        Url url = new Url();
+        StorageClass storageClass = new StorageClass(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url.getPurchaseRequest(), objectMaker(fromWhere,chooseOption), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                Toast.makeText(context, "Requested Success, we will contact soon", Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + storageClass.getJwtToken());
+                return headers;
+            }
+        };
+        requestQueue.add(request);
+
+
+    }
+
+    public static JSONObject objectMaker(String fromWhere,String subscriptionType) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("fromWhere", fromWhere);
+            object.put("subscriptionType",subscriptionType);
+
+        } catch (JSONException e) {
+        }
+        return object;
     }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Bottom layer: The main body, transparent. This is necessary for the stroke to render correctly -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+
+    <!-- Top line (the border) -->
+    <item android:bottom="-2dp" android:left="-2dp" android:right="-2dp">
+        <shape android:shape="rectangle">
+            <!-- A subtle, light gray color for the divider -->
+            <stroke
+                android:width="1dp"
+                android:color="@color/gray" />
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+</layer-list>

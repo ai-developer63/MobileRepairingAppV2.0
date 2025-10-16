@@ -106,7 +106,7 @@ public class WorkshopModelAdapter extends RecyclerView.Adapter<WorkshopModelAdap
 
         holder.clickAble.setOnClickListener(v -> {
             if (!isPaid) {
-                commonFunctions.showDialogWithPrice(context);
+                commonFunctions.showDialogWithPrice(context,"workshop");
             } else {
                 changeFragment(obj.optString("companyName"), obj.optString("name"));
             }

@@ -26,8 +26,10 @@ import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.fragments.course.CourseSubTopicFragment;
 import app.nepaliapp.mblfree.fragments.course.CoursefirstFragment;
+import app.nepaliapp.mblfree.fragments.servicefragment.SupportFragment;
 import app.nepaliapp.mblfree.fragments.userdash.HomeFragment;
 import app.nepaliapp.mblfree.fragments.userdash.PracticalFragment;
+import app.nepaliapp.mblfree.fragments.userdash.ProfileFragment;
 import app.nepaliapp.mblfree.fragments.userdash.ShecmatricCompaniesFragment;
 import app.nepaliapp.mblfree.fragments.userdash.VideosFragment;
 
@@ -77,6 +79,8 @@ public class DashBoardManager extends AppCompatActivity {
                     replaceFragments(new HomeFragment());
                 } else if ((currentFragment instanceof CourseSubTopicFragment)) {
                     replaceFragments(new CoursefirstFragment());
+                }else if ((currentFragment instanceof SupportFragment)) {
+                    replaceFragments(new ProfileFragment());
                 }
 
             }

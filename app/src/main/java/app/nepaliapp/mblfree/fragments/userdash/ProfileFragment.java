@@ -38,9 +38,10 @@ import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
 import app.nepaliapp.mblfree.fragmentmanager.DashBoardManager;
 import app.nepaliapp.mblfree.fragmentmanager.SigninManager;
+import app.nepaliapp.mblfree.fragments.servicefragment.SupportFragment;
 
 public class ProfileFragment extends Fragment {
-    CardView logoutBtn;
+    CardView logoutBtn, redeemCouponBtn,supportBtn;
     StorageClass storageClass;
     Url url;
 
@@ -49,7 +50,7 @@ public class ProfileFragment extends Fragment {
     RequestQueue requestQueue;
     FrameLayout loadingOverlay;
     CommonFunctions commonFunctions;
-    CardView reedemCopoun;
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -66,7 +67,7 @@ public class ProfileFragment extends Fragment {
         upgrade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                commonFunctions.showDialogWithPrice(requireContext());
+                commonFunctions.showDialogWithPrice(requireContext(),"profile");
             }
         });
 
@@ -77,10 +78,18 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        reedemCopoun.setOnClickListener(new View.OnClickListener() {
+        redeemCouponBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CouponDialog.show(requireContext(),false);
+                CouponDialog.show(requireContext(), false, "profile", () -> {
+                    getProfile();
+                });
+            }
+        });
+        supportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragmentChanger(new SupportFragment());
             }
         });
 
@@ -109,7 +118,8 @@ public class ProfileFragment extends Fragment {
         upgrade = view.findViewById(R.id.btnUpgrade);
         emailText = view.findViewById(R.id.tvEmail);
         loadingOverlay = view.findViewById(R.id.loadingOverlay);
-        reedemCopoun = view.findViewById(R.id.menu_redeem_coupon);
+        redeemCouponBtn = view.findViewById(R.id.menu_redeem_coupon);
+        supportBtn = view.findViewById(R.id.menu_support);
         //Initialization
         storageClass = new StorageClass(requireContext());
         url = new Url();
@@ -118,7 +128,7 @@ public class ProfileFragment extends Fragment {
     }
 
 
-    private void getProfile() {
+    public void getProfile() {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getRequestProfile(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {

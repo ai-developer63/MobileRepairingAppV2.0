@@ -68,7 +68,7 @@ public class SubCardCourseAdapter extends RecyclerView.Adapter<SubCardCourseAdap
                     if (isPaid) {
                         OpenCourse(obj.optString("subTopicName"));
                     } else {
-                        commonFunctions.showDialogWithPrice(context);
+                        commonFunctions.showDialogWithPrice(context,"course");
                     }
 
                 }
