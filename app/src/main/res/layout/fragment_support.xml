@@ -280,7 +280,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Looking for quick answers? Call us Remeber It will charge a money as it is Phone call \u2192"
+            android:text="Right Now, We only have above Support for our app So, In future Inapp messaging for Support is coming.."
             android:textColor="@color/colorAccentDemo"
             android:textSize="14sp"
             android:paddingTop="16dp"

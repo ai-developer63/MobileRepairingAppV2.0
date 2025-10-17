@@ -32,6 +32,9 @@ import app.nepaliapp.mblfree.fragments.userdash.PracticalFragment;
 import app.nepaliapp.mblfree.fragments.userdash.ProfileFragment;
 import app.nepaliapp.mblfree.fragments.userdash.ShecmatricCompaniesFragment;
 import app.nepaliapp.mblfree.fragments.userdash.VideosFragment;
+import app.nepaliapp.mblfree.fragments.workshop.WorkshopModelFragment;
+import app.nepaliapp.mblfree.fragments.workshop.WorkshopPracticalFragment;
+import app.nepaliapp.mblfree.fragments.workshop.WorkshopTopicsFragment;
 
 public class DashBoardManager extends AppCompatActivity {
 
@@ -81,7 +84,14 @@ public class DashBoardManager extends AppCompatActivity {
                     replaceFragments(new CoursefirstFragment());
                 }else if ((currentFragment instanceof SupportFragment)) {
                     replaceFragments(new ProfileFragment());
+                }else if ((currentFragment instanceof VideosFragment)) {
+                    navigateTo(new PracticalFragment(), R.id.practical);
+                }else if ((currentFragment instanceof WorkshopPracticalFragment)) {
+                    replaceFragments(new PracticalFragment());
+                } else if ((currentFragment instanceof WorkshopTopicsFragment)) {
+                    replaceFragments(new PracticalFragment());
                 }
+
 
             }
         };

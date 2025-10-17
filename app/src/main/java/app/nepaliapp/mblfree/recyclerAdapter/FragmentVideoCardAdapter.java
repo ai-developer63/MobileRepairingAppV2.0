@@ -21,14 +21,17 @@ import org.json.JSONObject;
 
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.activity.VideoPlayingActivity;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 
 public class FragmentVideoCardAdapter extends RecyclerView.Adapter<FragmentVideoCardAdapter.ViewHolder> {
     Context context;
     JSONArray array;
+    CommonFunctions commonFunctions;
 
     public FragmentVideoCardAdapter(Context context, JSONArray array) {
         this.context = context;
         this.array = array;
+        this.commonFunctions = new CommonFunctions();
     }
 
     @NonNull
@@ -48,16 +51,22 @@ public class FragmentVideoCardAdapter extends RecyclerView.Adapter<FragmentVideo
                 .load(object.optString("image"))
                 .error(R.mipmap.ic_launcher)
                 .into(holder.thumnailView);
+        boolean Paid = object.optBoolean("isPaid", true);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @OptIn(markerClass = UnstableApi.class)
             @Override
             public void onClick(View view) {
+
+                if (Paid){
                 Intent intent = new Intent(context, VideoPlayingActivity.class);
                 intent.putExtra("videoUrl", object.optString("link"));
                 intent.putExtra("videoTitle", object.optString("title"));
                 intent.putExtra("videoListJson", array.toString());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
+                } else {
+                commonFunctions.showDialogWithPrice(context, "Videos");
+            }
             }
         });
     }

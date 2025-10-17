@@ -12,10 +12,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import app.nepaliapp.mblfree.R;
 
@@ -58,7 +62,21 @@ public class ImageZoomingFunction extends Dialog {
                     .placeholder(R.drawable.image_placeholder)
                     .error(R.drawable.image_error)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imageView);
+                    .into(new CustomTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            imageView.setImageDrawable(resource);
+
+                            // Now drawable is loaded, post centering
+                            imageView.post(() -> centerImage(imageView));
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            imageView.setImageDrawable(placeholder);
+                        }
+                    });
+
         }
 
         // Set dialog size
@@ -68,8 +86,7 @@ public class ImageZoomingFunction extends Dialog {
         ImageView btnCancel = findViewById(R.id.btn_cancel);
         btnCancel.setOnClickListener(v -> dismiss());
 
-        // Center the image initially
-        imageView.post(() -> centerImage(imageView));
+
 
         // Set pinch & drag listener
         imageView.setOnTouchListener(new View.OnTouchListener() {

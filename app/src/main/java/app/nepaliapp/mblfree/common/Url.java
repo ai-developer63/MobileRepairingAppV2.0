@@ -19,6 +19,7 @@ public class Url {
     String schematicsLinks = "api/schematric/of/";
     String price = "NewMBLPrice";
     String homeVideos = "api/getAllHomeVideos";
+    String courseVideos = "api/getAllCourseVideos";
      //workshop
     String requestWorkShopCompany = "api/topics/allcompanies";
     String requestWorkShopModel = "api/topics/subcompany/";
@@ -38,6 +39,10 @@ public class Url {
 
     //RedeemCoupon Code
     String couponCode = "api/redeem";
+
+    public String getCourseVideos() {
+        return officialUrl+courseVideos;
+    }
 
     public String getCouponCode() {
         return officialUrl+couponCode;
