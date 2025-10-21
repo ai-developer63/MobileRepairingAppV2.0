@@ -20,7 +20,7 @@
         android:id="@+id/imageContent"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:visibility="gone"
         tools:src="@drawable/image_error"
         android:layout_marginTop="20dp"/>
@@ -32,6 +32,7 @@
         android:layout_marginTop="20dp"
         android:visibility="gone">
 
+        <!-- Video Player -->
         <androidx.media3.ui.PlayerView
             android:id="@+id/player_view"
             android:layout_width="match_parent"
@@ -41,6 +42,7 @@
             app:use_controller="true"
             android:visibility="gone"/>
 
+        <!-- Video Thumbnail -->
         <ImageView
             android:id="@+id/videoThumbnail"
             android:layout_width="match_parent"
@@ -48,6 +50,19 @@
             android:scaleType="fitCenter"
             android:visibility="gone"
             android:src="@mipmap/ic_launcher"/>
+
+        <!-- Play Button -->
+        <ImageView
+            android:id="@+id/playButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_media_play"
+            android:background="@drawable/circle_background"
+            android:padding="10dp"
+            app:tint="@android:color/white"
+            android:visibility="gone"/>
     </FrameLayout>
+
 
 </LinearLayout>

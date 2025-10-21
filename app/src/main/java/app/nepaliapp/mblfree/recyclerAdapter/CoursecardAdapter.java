@@ -24,15 +24,18 @@ import org.json.JSONObject;
 
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.activity.CourseActivity;
+import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.fragments.course.CourseSubTopicFragment;
 
 public class CoursecardAdapter extends RecyclerView.Adapter<CoursecardAdapter.ViewHolder> {
    Context context;
    JSONArray cardData;
+    CommonFunctions commonFunctions;
 
     public CoursecardAdapter(Context context, JSONArray cardData) {
         this.context = context;
         this.cardData = cardData;
+        this.commonFunctions = new CommonFunctions();
     }
 
     @NonNull
@@ -66,7 +69,7 @@ public class CoursecardAdapter extends RecyclerView.Adapter<CoursecardAdapter.Vi
                     if (isPaid) {
                         onClickContext(obj.optString("opens"),obj.optString("name"));
                     } else {
-                        Toast.makeText(context, "Seems Lock", Toast.LENGTH_SHORT).show();
+                        commonFunctions.showDialogWithPrice(context,"course");
                     }
 
                 }
@@ -75,7 +78,6 @@ public class CoursecardAdapter extends RecyclerView.Adapter<CoursecardAdapter.Vi
             throw new RuntimeException(e);
         }
     }
-
     @Override
     public int getItemCount() {
         return cardData.length();

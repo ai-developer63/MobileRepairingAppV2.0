@@ -2,6 +2,7 @@ package app.nepaliapp.mblfree.recyclerAdapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,7 +41,6 @@ public class StepsAddingAdapter extends RecyclerView.Adapter<StepsAddingAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         JSONObject step = array.optJSONObject(position);
-
         // Set step number and heading
         holder.stepNumber.setText("Step: "+ step.optString( "stepNumber"));
         holder.stepHeading.setText(step.optString("heading"));
@@ -59,8 +61,14 @@ public class StepsAddingAdapter extends RecyclerView.Adapter<StepsAddingAdapter.
                     String key = "image" + i;
                     if (imagesObj.has(key) && !imagesObj.isNull(key)) {
                         String image = imagesObj.optString(key);
+
                         if (image != null && !image.isEmpty()) {
+                            if (position==5) {
+                                Log.d("Image url", image);
+                            }
+
                             imageUrls.add(image);  // full URL already provided by backend
+
                         }
                     }
                 }

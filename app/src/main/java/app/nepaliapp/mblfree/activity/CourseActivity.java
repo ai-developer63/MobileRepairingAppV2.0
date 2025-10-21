@@ -144,6 +144,7 @@ public class CourseActivity extends AppCompatActivity {
                 return headers;
             }
         };
+        objectRequest.setShouldCache(false);
         requestQueue.add(objectRequest);
     }
 

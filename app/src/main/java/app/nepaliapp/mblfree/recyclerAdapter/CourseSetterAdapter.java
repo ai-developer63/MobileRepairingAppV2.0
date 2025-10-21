@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.media3.common.MediaItem;
@@ -21,15 +22,19 @@ import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.CustomHttpDataSourceFactory;
 import app.nepaliapp.mblfree.common.StorageClass;
 
 
 public class CourseSetterAdapter extends RecyclerView.Adapter<CourseSetterAdapter.ViewHolder> {
+    public int currentlyPlayingPosition = -1;
     Context context;
     JSONArray array;
     private ExoPlayer player;
@@ -39,15 +44,14 @@ public class CourseSetterAdapter extends RecyclerView.Adapter<CourseSetterAdapte
     private ViewGroup originalParent;
     private ExoPlayer currentPlayer = null;
     private PlayerView currentPlayerView = null;
-    public int currentlyPlayingPosition = -1;
 
     public CourseSetterAdapter(Context context, JSONArray array) {
         this.context = context;
         this.array = array;
-        this.isFullScreen  = false;
+        this.isFullScreen = false;
         Activity activity = (Activity) context;
         fullscreenContainer = activity.findViewById(R.id.fullscreen_container);
-            }
+    }
 
     @NonNull
     @Override
@@ -58,6 +62,12 @@ public class CourseSetterAdapter extends RecyclerView.Adapter<CourseSetterAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        //Reset is important
+        holder.textContent.setVisibility(View.GONE);
+        holder.imageContent.setVisibility(View.GONE);
+        holder.videoContent.setVisibility(View.GONE);
+        holder.videoThumbnail.setVisibility(View.GONE);
+        holder.frameLayout.setVisibility(View.GONE);
         JSONObject object = array.optJSONObject(position);
         String type = object.optString("type");
 
@@ -87,7 +97,7 @@ public class CourseSetterAdapter extends RecyclerView.Adapter<CourseSetterAdapte
             holder.frameLayout.setVisibility(View.VISIBLE);
             holder.videoContent.setVisibility(View.VISIBLE);
             holder.videoThumbnail.setVisibility(View.VISIBLE);
-
+            holder.playButton.setVisibility(View.VISIBLE);
             JSONArray videoArray = object.optJSONArray("value");
             if (videoArray != null && videoArray.length() > 0) {
                 JSONObject videoObj = videoArray.optJSONObject(0);
@@ -103,6 +113,7 @@ public class CourseSetterAdapter extends RecyclerView.Adapter<CourseSetterAdapte
 
                 // On thumbnail click, hide thumbnail & play video
                 holder.videoThumbnail.setOnClickListener(v -> {
+                    holder.playButton.setVisibility(View.GONE);
                     holder.videoThumbnail.setVisibility(View.GONE);
                     initializePlayer(videoUrl, holder.videoContent);
                     currentlyPlayingPosition = position;
@@ -132,7 +143,7 @@ public class CourseSetterAdapter extends RecyclerView.Adapter<CourseSetterAdapte
             }
         }
 
-     playerView.setFullscreenButtonClickListener(isFull -> toggleFullScreen(playerView));
+        playerView.setFullscreenButtonClickListener(isFull -> toggleFullScreen(playerView));
         StorageClass tokenStore = new StorageClass(context);
         String jwtToken = tokenStore.getJwtToken();
         HttpDataSource.Factory dataSourceFactory = new CustomHttpDataSourceFactory(jwtToken);
@@ -205,9 +216,19 @@ public class CourseSetterAdapter extends RecyclerView.Adapter<CourseSetterAdapte
         }
     }
 
+    public void releasePlayer() {
+        if (player != null) {
+            player.setPlayWhenReady(false);
+            player.pause();
+            player.release();
+            player = null;
+            currentlyPlayingPosition = -1;
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView textContent;
-        ImageView imageContent;
+        ImageView imageContent, playButton;
         PlayerView videoContent;
         ImageView videoThumbnail;
         FrameLayout frameLayout;
@@ -218,16 +239,8 @@ public class CourseSetterAdapter extends RecyclerView.Adapter<CourseSetterAdapte
             imageContent = itemView.findViewById(R.id.imageContent);
             videoContent = itemView.findViewById(R.id.player_view);
             videoThumbnail = itemView.findViewById(R.id.videoThumbnail);
+            playButton = itemView.findViewById(R.id.playButton);
             frameLayout = itemView.findViewById(R.id.wholeFrame);
-        }
-    }
-    public void releasePlayer() {
-        if (player != null) {
-            player.setPlayWhenReady(false);
-            player.pause();
-            player.release();
-            player = null;
-            currentlyPlayingPosition = -1;
         }
     }
 }

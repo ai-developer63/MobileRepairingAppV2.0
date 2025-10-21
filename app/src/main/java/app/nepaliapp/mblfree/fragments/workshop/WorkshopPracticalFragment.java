@@ -2,6 +2,7 @@ package app.nepaliapp.mblfree.fragments.workshop;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,6 +144,8 @@ public class WorkshopPracticalFragment extends Fragment {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
+        Log.d("Required data", object.toString());
         return object;
     }
 

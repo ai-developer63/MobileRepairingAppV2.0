@@ -1,10 +1,14 @@
 package app.nepaliapp.mblfree.common;
 
-
+import app.nepaliapp.mblfree.BuildConfig;
 public class Url {
+//local.properties
+//        API_KEY=https://raw.githubusercontent.com/ai-developer63/just/gh-pages/
+//    API_KEY1=https://vpn-nepali.firebaseapp.com
 
-    String gitUrl = "https://raw.githubusercontent.com/ai-developer63/just/gh-pages/";
-    String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
+    String gitUrl=BuildConfig.API_KEY;
+    String officialUrl=BuildConfig.API_KEY1;
+//    String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
 //    String officialUrl = "https://pmbl.subhakhar.xyz/";
     String app_checkup = "appcheck";
     String updateCountry = "api/getCountry";
