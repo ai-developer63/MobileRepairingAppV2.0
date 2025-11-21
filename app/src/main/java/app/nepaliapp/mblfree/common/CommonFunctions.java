@@ -84,7 +84,10 @@ public class CommonFunctions {
             public void onResponse(JSONObject jsonObject) {
                 String country= storageClass.getUserCountry().trim();
                 if (country.equalsIgnoreCase("Nepal")){
-                    SubscriptionDialog.show(context, jsonObject,fromWhere);
+//                    SubscriptionDialog.show(context, jsonObject,fromWhere);
+                    CouponDialog.show(context,true,fromWhere,()->{
+                        alertDialogForCouponCodeRedeem(context);
+                    });
                 }else{
                  CouponDialog.show(context,true,fromWhere,()->{
                      alertDialogForCouponCodeRedeem(context);

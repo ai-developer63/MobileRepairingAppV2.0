@@ -80,9 +80,9 @@ CommonFunctions commonFunctions;
             return insets;
         });
         findingById();
-        if (!storageClass.getJwtToken().equalsIgnoreCase("Jwt_kali_xa")){
-           UpdateCountry();
-        }
+//        if (!storageClass.getJwtToken().equalsIgnoreCase("Jwt_kali_xa")){
+//           UpdateCountry();
+//        }
         restartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

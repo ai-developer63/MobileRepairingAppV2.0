@@ -36,6 +36,8 @@ import com.hbb20.CountryCodePicker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,6 +60,7 @@ public class SignupFragment extends Fragment {
     Url url;
     Context context;
     RequestQueue requestQueue;
+    CommonFunctions commonFunctions;
 
     public SignupFragment() {
         // Required empty public constructor
@@ -212,6 +215,7 @@ public class SignupFragment extends Fragment {
         phoneEditText = view.findViewById(R.id.phoneEditText);
         ccp = view.findViewById(R.id.ccp);
         togglePasswordVisibility = view.findViewById(R.id.togglePasswordVisibility);
+        commonFunctions = new CommonFunctions();
 
 
     }
@@ -270,6 +274,7 @@ public class SignupFragment extends Fragment {
                 String token = response.optString("token");
                 Toast.makeText(context, response.optString("message"), Toast.LENGTH_SHORT).show();
                 storageClass.UpdateJwtToken(token);
+                UpdateCountry();
                 Intent intent = new Intent(getActivity(), DashBoardManager.class);
                 intent.putExtra("who", response.optString("who"));
                 startActivity(intent);
@@ -307,6 +312,28 @@ public class SignupFragment extends Fragment {
         });
         requestQueue.add(resiteredObject);
 
+    }
+
+    private void UpdateCountry(){
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getUpdateCountry(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                storageClass.UpdateUserCountry(jsonObject.optString("country"));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                commonFunctions.handleErrorResponse(requireContext(),volleyError);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + storageClass.getJwtToken());
+                return headers;
+            }
+        };
+        requestQueue.add(request);
     }
 
 }

@@ -35,9 +35,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import app.nepaliapp.mblfree.MainActivity;
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.MySingleton;
@@ -57,6 +60,7 @@ public class LoginFragment extends Fragment {
     StorageClass storageClass;
     private RequestQueue requestQueue;
     FrameLayout loadingOverlay;
+    CommonFunctions commonFunctions;
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -177,6 +181,7 @@ public class LoginFragment extends Fragment {
         //initialization
         url = new Url();
         storageClass = new StorageClass(context);
+        commonFunctions = new CommonFunctions();
     }
 
     private boolean emailCheckerRegex(String Email) {
@@ -199,6 +204,7 @@ public class LoginFragment extends Fragment {
                         try {
                             String token = response.getString("token");
                             storageClass.UpdateJwtToken(token);
+                            UpdateCountry();
                             Intent intent = new Intent(getActivity(), DashBoardManager.class);
                             intent.putExtra("who", response.optString("who"));
                             startActivity(intent);
@@ -248,6 +254,28 @@ public class LoginFragment extends Fragment {
 
         Log.d("TAG", "Request JSON: " + object.toString());
         return object;
+    }
+
+    private void UpdateCountry(){
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getUpdateCountry(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                storageClass.UpdateUserCountry(jsonObject.optString("country"));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                commonFunctions.handleErrorResponse(requireContext(),volleyError);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + storageClass.getJwtToken());
+                return headers;
+            }
+        };
+        requestQueue.add(request);
     }
 
 }

@@ -3,6 +3,7 @@ package app.nepaliapp.mblfree.common;
 import static androidx.core.content.ContextCompat.startActivity;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -49,6 +51,19 @@ public class CouponDialog {
         ImageView buttonHelp = dialogView.findViewById(R.id.icon_help_video);
         ImageView closeBtn = dialogView.findViewById(R.id.closeicon);
 
+
+        //Just for Payment UI control
+        TextView packageExplainer = dialogView.findViewById(R.id.packexplainer);
+
+        if (storageClass.getUserCountry().equalsIgnoreCase("Nepal")) {
+            packageExplainer.setVisibility(View.VISIBLE);
+        }else {
+            packageExplainer.setText("Some courses in this app are currently locked.\n" +
+                    "You can unlock all courses using a coupon code.\n" +
+                    "For coupon code assistance or help, please contact our Facebook Customer Support.");
+            packageExplainer.setVisibility(View.VISIBLE);
+        }
+
         if (!isCountryChecked) {
             if (storageClass.getUserCountry().equalsIgnoreCase("Nepal")) {
                 buttonRequest.setVisibility(View.GONE);
@@ -78,18 +93,26 @@ public class CouponDialog {
         // 💬 Request Coupon
         buttonRequest.setOnClickListener(v -> {
             updateRequest(context, "copoun code", fromWhere);
+          String messengerLink;
+            String fallbackUrl;
+            if (storageClass.getUserCountry().equalsIgnoreCase("Nepal")) {
+                 messengerLink = "https://m.me/106704358421953?text=" + Uri.encode("I want to request a coupon code.");
+                fallbackUrl = "https://m.me/106704358421953";
+            } else {
+                 messengerLink = "https://m.me/110702794806928?text=" + Uri.encode("I want to request a coupon code.");
+                fallbackUrl = "https://m.me/106704358421953";
+            }
 
-            String messengerLink = "https://m.me/110702794806928?text=" + Uri.encode("I want to request a coupon code.");
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(messengerLink));
 
-            // Modern check: only start if an app can handle it
             if (intent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivity(intent);  // ✅ Use context here
+                try {
+                    context.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(fallbackUrl)));
+                }
             } else {
-                // Fallback: open in browser explicitly
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://m.me/110702794806928"));
-                context.startActivity(browserIntent);
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(fallbackUrl)));
             }
 
             dialog.dismiss();
@@ -98,9 +121,9 @@ public class CouponDialog {
         // 🎥 Help Button
         buttonHelp.setOnClickListener(v -> {
             if (storageClass.getUserCountry().equalsIgnoreCase("Nepal")) {
-                CommonFunctions.getRequestedVideos(context, "Mobile Repairing Marketing Video");
+                CommonFunctions.getRequestedVideos(context, "App मा Copoun Code कसरी Reedem गर्ने?");
             } else {
-                CommonFunctions.getRequestedVideos(context, "Ads English");
+                CommonFunctions.getRequestedVideos(context, "How to Purchase Coupon Code ?");
             }
         });
 

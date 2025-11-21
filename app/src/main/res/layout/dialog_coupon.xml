@@ -28,7 +28,7 @@
             android:id="@+id/text_help_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="How to get Coupon Code?"
+            android:text="How to redeem Coupon Code?"
             android:textSize="16sp"
             android:textColor="#222222"
             android:textStyle="bold" />
@@ -52,7 +52,19 @@
             android:textSize="13sp"
             android:textColor="#666666"
             android:layout_marginTop="4dp" />
-
+        <TextView
+            android:id="@+id/packexplainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="केहि Courses locked छन्। Coupon Code प्रयोग गरेर सबै Courses unlock गर्न सक्नुहुन्छ। Coupon को लागि हाम्रो Facebook Customer Support मा सम्पर्क गर्नुहोस्।"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+            android:textColor="@color/teal_700"
+            android:layout_marginTop="15dp"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <!-- Coupon Input -->
@@ -82,9 +94,10 @@
         android:id="@+id/button_request"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Request Coupon Code"
+        android:text="Contact Support"
         android:layout_marginTop="8dp"
         android:backgroundTint="#2196F3"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:visibility="visible"/>
 
 </LinearLayout>

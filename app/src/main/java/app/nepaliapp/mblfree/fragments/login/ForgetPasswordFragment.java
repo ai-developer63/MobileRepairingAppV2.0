@@ -292,12 +292,20 @@ public class ForgetPasswordFragment extends Fragment {
                         } else if (volleyError instanceof AuthFailureError) {
                             Toast.makeText(context, "Authentication failed", Toast.LENGTH_SHORT).show();
                         } else if (volleyError instanceof NetworkError) {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
                         } else if (volleyError instanceof ServerError) {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
                         } else if (volleyError instanceof TimeoutError) {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
                         } else {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Unexpected Error", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -359,12 +367,20 @@ public class ForgetPasswordFragment extends Fragment {
                             emailEditText.setError("Multiple accounts in our system");
                             emailEditText.requestFocus();
                         } else if (volleyError instanceof NetworkError) {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
                         } else if (volleyError instanceof ServerError) {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
                         } else if (volleyError instanceof TimeoutError) {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
                         } else {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Unexpected Error", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -407,12 +423,20 @@ public class ForgetPasswordFragment extends Fragment {
                             actionButton.setVisibility(View.VISIBLE);
                             emailEditText.setError("Multiple accounts in our system");
                         } else if (volleyError instanceof NetworkError) {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
                         } else if (volleyError instanceof ServerError) {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
                         } else if (volleyError instanceof TimeoutError) {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Timeout Error", Toast.LENGTH_SHORT).show();
                         } else {
+                            loadingOverlay.setVisibility(View.GONE);
+                            actionButton.setVisibility(View.VISIBLE);
                             Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
                         }
                     }
