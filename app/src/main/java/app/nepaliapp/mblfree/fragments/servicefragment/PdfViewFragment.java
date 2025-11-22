@@ -18,7 +18,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.github.barteksc.pdfviewer.PDFView;
+import com.alamin5g.pdf.PDFView;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -168,7 +169,6 @@ public class PdfViewFragment extends Fragment {
         }).start();
     }
 
-
     private void openPdf(File pdfFile) {
         loadingOverlay.setVisibility(View.GONE);
         if (pdfView != null && isFragmentAttached) {
@@ -178,12 +178,16 @@ public class PdfViewFragment extends Fragment {
                     .spacing(10)
                     .enableDoubletap(true)
                     .enableSwipe(true)
+                    .enableAntialiasing(true)
+                    .enableDoubletap(true)
+                    .fitEachPage(true)
                     .load();
-            pdfView.setMinZoom(1f);
-            pdfView.setMaxZoom(15f);
-        }
 
+            pdfView.setMinZoom(1f);
+            pdfView.setMaxZoom(4f);
+        }
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
