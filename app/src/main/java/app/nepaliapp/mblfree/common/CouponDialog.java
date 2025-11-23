@@ -123,7 +123,7 @@ public class CouponDialog {
             if (storageClass.getUserCountry().equalsIgnoreCase("Nepal")) {
                 CommonFunctions.getRequestedVideos(context, "App मा Copoun Code कसरी Reedem गर्ने?");
             } else {
-                CommonFunctions.getRequestedVideos(context, "How to Purchase Coupon Code ?");
+                CommonFunctions.getRequestedVideos(context, "How to redeem Coupon Code ?");
             }
         });
 

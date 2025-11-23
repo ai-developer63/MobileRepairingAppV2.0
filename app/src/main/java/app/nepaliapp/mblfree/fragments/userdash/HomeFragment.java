@@ -38,6 +38,7 @@ import java.util.Map;
 
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.CommonFunctions;
+import app.nepaliapp.mblfree.common.DeviceIDChecker;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
@@ -66,6 +67,8 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         init(view);
         videoRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        DeviceIDChecker.getInstance(requireContext()).startChecking();
+
         loadingOverlay.setVisibility(View.VISIBLE);
         carousel.registerLifecycle(getLifecycle());
         List<CarouselItem> items = new ArrayList<>();

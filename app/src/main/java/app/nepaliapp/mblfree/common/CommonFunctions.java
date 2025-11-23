@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.activity.VideoPlayingActivity;
 import app.nepaliapp.mblfree.fragmentmanager.SigninManager;
 
@@ -84,10 +83,7 @@ public class CommonFunctions {
             public void onResponse(JSONObject jsonObject) {
                 String country= storageClass.getUserCountry().trim();
                 if (country.equalsIgnoreCase("Nepal")){
-//                    SubscriptionDialog.show(context, jsonObject,fromWhere);
-                    CouponDialog.show(context,true,fromWhere,()->{
-                        alertDialogForCouponCodeRedeem(context);
-                    });
+                    getServerPermission(context,fromWhere,jsonObject);
                 }else{
                  CouponDialog.show(context,true,fromWhere,()->{
                      alertDialogForCouponCodeRedeem(context);
@@ -143,7 +139,7 @@ public class CommonFunctions {
         alert.show();
 
     }
-    private void alertDialogForCouponCodeRedeem(Context context) {
+    private static void alertDialogForCouponCodeRedeem(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Coupon Code Redeemed Successfully");
         builder.setMessage("Finally Everything Unlocked...");
@@ -186,6 +182,42 @@ public class CommonFunctions {
                         }
                     }
                 }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                commonFunctions.handleErrorResponse(context, volleyError);
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + storageClass.getJwtToken());
+                return headers;
+            }
+        };
+        requestQueue.add(request);
+
+    }
+
+    static void getServerPermission(Context context,String fromWhere,JSONObject priceObject) {
+        CommonFunctions commonFunctions = new CommonFunctions();
+        RequestQueue requestQueue = MySingleton.getInstance(context).getRequestQueue();
+        Url url = new Url();
+        StorageClass storageClass = new StorageClass(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url.getServerPermissionForSales(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+
+                if (jsonObject.optBoolean("server_ordered")){
+                    SubscriptionDialog.show(context, priceObject,fromWhere);
+                }else{
+                    CouponDialog.show(context,true,fromWhere,()->{
+                        alertDialogForCouponCodeRedeem(context);
+                    });
+                }
+
             }
         }, new Response.ErrorListener() {
             @Override

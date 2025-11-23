@@ -7,8 +7,8 @@ public class Url {
 //    API_KEY1=https://vpn-nepali.firebaseapp.com
 
     String gitUrl=BuildConfig.API_KEY;
-    String officialUrl=BuildConfig.API_KEY1;
-//    String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
+//    String officialUrl=BuildConfig.API_KEY1;
+    String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
 //    String officialUrl = "https://pmbl.subhakhar.xyz/";
     String app_checkup = "appcheck";
     String updateCountry = "api/getCountry";
@@ -29,6 +29,7 @@ public class Url {
     String requestWorkShopModel = "api/topics/subcompany/";
     String requestWorkShopTopic = "api/getAlltopics";
     String requestWorkShopSteps = "api/getSteps";
+    String deviceIdFetch= "getdeviceID";
     //Profile Part
     String requestProfile = "api/getProfile";
 
@@ -37,12 +38,21 @@ public class Url {
     String FirstTopicsCourses = "api/courses/mainsetting";
     String SecondTopicsCourses = "api/courses/subcard/";
     String RequestCourse = "api/course/";
-
+    String serverPermissionForSales = "api/apps/1";
     // Request Purchase
     String purchaseRequest= "api/requestPurchase";
 
     //RedeemCoupon Code
     String couponCode = "api/redeem";
+
+    public String getServerPermissionForSales() {
+        return officialUrl+ serverPermissionForSales;
+    }
+
+    public String getDeviceIdFetch(){
+        return officialUrl+deviceIdFetch;
+    }
+
 
     public String getCourseVideos() {
         return officialUrl+courseVideos;

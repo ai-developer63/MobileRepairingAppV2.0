@@ -33,6 +33,7 @@ import java.util.Map;
 import app.nepaliapp.mblfree.R;
 import app.nepaliapp.mblfree.common.CommonFunctions;
 import app.nepaliapp.mblfree.common.CouponDialog;
+import app.nepaliapp.mblfree.common.DeviceIDChecker;
 import app.nepaliapp.mblfree.common.MySingleton;
 import app.nepaliapp.mblfree.common.StorageClass;
 import app.nepaliapp.mblfree.common.Url;
@@ -208,7 +209,7 @@ public class ProfileFragment extends Fragment {
                         Intent intent = new Intent(context.getApplicationContext(), SigninManager.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(intent);
-
+                        DeviceIDChecker.getInstance(requireContext()).stopChecking();
                         if (context instanceof Activity) {
                             ((Activity) context).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                             ((Activity) context).finish();
