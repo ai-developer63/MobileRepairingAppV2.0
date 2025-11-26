@@ -98,9 +98,11 @@ CommonFunctions commonFunctions;
                 String serverContext = jsonObject.optString("mobilerepairingapp");
                 Log.d("serverContext", serverContext);
                 if (serverContext.equalsIgnoreCase("running")) {
-                    String serverVersion = jsonObject.optString("mblversonName");
+                    String serverVersion = jsonObject.optString("mblversonName", "").trim();
                     String localVersion = getAppVersionName();
                     int result = compareVersion(localVersion, serverVersion);
+
+
                     if (result < 0) {
                         showUpdateDialog(jsonObject.optBoolean("mblupdatecancelable"), isUpdateNow -> {
                             if (isUpdateNow) {

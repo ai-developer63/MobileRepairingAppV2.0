@@ -11,7 +11,7 @@ android {
         minSdk 24
         targetSdk 36
         versionCode 58
-        versionName "2.2"
+        versionName "2.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         Properties properties = new Properties();

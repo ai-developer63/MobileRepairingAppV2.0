@@ -7,8 +7,8 @@ public class Url {
 //    API_KEY1=https://vpn-nepali.firebaseapp.com
 
     String gitUrl=BuildConfig.API_KEY;
-//    String officialUrl=BuildConfig.API_KEY1;
-    String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
+    String officialUrl=BuildConfig.API_KEY1;
+//    String officialUrl = "https://mobilerepairing.subhakhar.xyz/";
 //    String officialUrl = "https://pmbl.subhakhar.xyz/";
     String app_checkup = "appcheck";
     String updateCountry = "api/getCountry";
